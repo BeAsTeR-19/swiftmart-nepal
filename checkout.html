@@ -126,7 +126,7 @@
       box-shadow: 0 2px 8px rgba(26,115,232,0.15);
     }
     .pay-tab.active[data-tab="esewa"] { border-color: var(--esewa); color: var(--esewa); }
-    .pay-tab.active[data-tab="khalti"] { border-color: var(--khalti); color: var(--khalti); }
+    .pay-tab.active[data-tab="bank"] { border-color: var(--bank, #154c7a); color: var(--bank, #154c7a); }
 
     .tab-content {
       display: none;
@@ -273,16 +273,16 @@
               
               <div class="pay-tabs">
                 <div class="pay-tab active" data-tab="cod" onclick="switchTab('cod')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  <img src="https://cdn-icons-png.flaticon.com/128/1554/1554406.png" style="height:28px; width:auto; object-fit:contain;" alt="COD">
                   Cash on Delivery
                 </div>
                 <div class="pay-tab" data-tab="esewa" onclick="switchTab('esewa')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Esewa_logo.webp" style="height:28px; width:auto; object-fit:contain;" alt="eSewa">
                   eSewa
                 </div>
-                <div class="pay-tab" data-tab="khalti" onclick="switchTab('khalti')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                  Khalti
+                <div class="pay-tab" data-tab="bank" onclick="switchTab('bank')">
+                  <img src="https://cdn-icons-png.flaticon.com/128/2830/2830284.png" style="height:28px; width:auto; object-fit:contain;" alt="Bank">
+                  Bank Transfer
                 </div>
               </div>
               <input type="hidden" name="paymentMethod" id="payment-method-input" value="COD">
@@ -298,9 +298,13 @@
               <!-- eSewa Content -->
               <div class="tab-content" id="tab-esewa">
                 <div class="qr-section">
-                  <div class="qr-placeholder" style="border-color:var(--esewa); color:var(--esewa);">eSewa QR Code</div>
-                  <p>Or send directly to: <strong style="color:var(--esewa); font-size:16px;">98XXXXXXXX</strong></p>
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=eSewa:9769753746" alt="eSewa QR" style="width:160px; height:160px; border-radius:8px; margin-bottom:12px; border:2px solid var(--esewa); padding: 4px; background:#fff;">
+                  <p>Or send directly to: <strong style="color:var(--esewa); font-size:16px;">976-9753746</strong></p>
                   <p style="margin-top:4px; font-size:12px; color:var(--text-3);">Name: SwiftMart Nepal</p>
+                </div>
+                <div class="pay-form-group">
+                  <label>Your eSewa Mobile Number *</label>
+                  <input type="tel" id="esewa-number" name="esewaNumber" placeholder="e.g. 98XXXXXXXX">
                 </div>
                 <div class="pay-form-group">
                   <label>Transaction / Reference Code *</label>
@@ -308,16 +312,24 @@
                 </div>
               </div>
 
-              <!-- Khalti Content -->
-              <div class="tab-content" id="tab-khalti">
+              <!-- Bank Content -->
+              <div class="tab-content" id="tab-bank">
                 <div class="qr-section">
-                  <div class="qr-placeholder" style="border-color:var(--khalti); color:var(--khalti);">Khalti QR Code</div>
-                  <p>Or send directly to: <strong style="color:var(--khalti); font-size:16px;">98XXXXXXXX</strong></p>
-                  <p style="margin-top:4px; font-size:12px; color:var(--text-3);">Name: SwiftMart Nepal</p>
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=BankTransfer:123456789" alt="Bank QR" style="width:160px; height:160px; border-radius:8px; margin-bottom:12px; border:2px solid #154c7a; padding: 4px; background:#fff;">
+                  <p>Or transfer directly to:</p>
+                  <div style="font-size:14px; color:var(--text); text-align:left; background:#fff; padding:12px; border-radius:4px; margin-top:8px; border:1px solid var(--border);">
+                    <div style="margin-bottom:4px;"><strong>Bank:</strong> Global IME Bank</div>
+                    <div style="margin-bottom:4px;"><strong>Account Name:</strong> SwiftMart Nepal</div>
+                    <div><strong>Account No:</strong> 01234567890123</div>
+                  </div>
                 </div>
                 <div class="pay-form-group">
-                  <label>Transaction Code *</label>
-                  <input type="text" id="khalti-txn" name="khaltiTxn" placeholder="e.g. KHL123456">
+                  <label>Your Bank Account Name *</label>
+                  <input type="text" id="bank-name" name="bankName" placeholder="e.g. John Doe">
+                </div>
+                <div class="pay-form-group">
+                  <label>Transaction / Reference Code *</label>
+                  <input type="text" id="bank-txn" name="bankTxn" placeholder="e.g. TRN123456">
                 </div>
               </div>
 
@@ -437,10 +449,16 @@
         let txId = '';
         if (data.paymentMethod === 'eSewa') {
           txId = data.esewaTxn;
+          const esewaNum = data.esewaNumber;
+          if(!esewaNum) return SM.toast('Please enter your eSewa Mobile Number', 'error');
           if(!txId) return SM.toast('Please enter eSewa Transaction Code', 'error');
-        } else if (data.paymentMethod === 'Khalti') {
-          txId = data.khaltiTxn;
-          if(!txId) return SM.toast('Please enter Khalti Transaction Code', 'error');
+          txId = `Num: ${esewaNum}, Txn: ${txId}`;
+        } else if (data.paymentMethod === 'Bank') {
+          txId = data.bankTxn;
+          const bankName = data.bankName;
+          if(!bankName) return SM.toast('Please enter your Bank Account Name', 'error');
+          if(!txId) return SM.toast('Please enter Bank Transaction Code', 'error');
+          txId = `Name: ${bankName}, Txn: ${txId}`;
         }
 
         const newOrder = SM.createOrder({
@@ -498,7 +516,7 @@
       document.querySelector(`.pay-tab[data-tab="${tabId}"]`).classList.add('active');
       document.getElementById(`tab-${tabId}`).classList.add('active');
       
-      let methodMap = { cod: 'COD', esewa: 'eSewa', khalti: 'Khalti' };
+      let methodMap = { cod: 'COD', esewa: 'eSewa', bank: 'Bank' };
       document.getElementById('payment-method-input').value = methodMap[tabId];
     }
   </script>
