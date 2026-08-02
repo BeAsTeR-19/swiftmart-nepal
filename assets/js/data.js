@@ -174,10 +174,17 @@ const SM = {
     localStorage.setItem(sm_keys.wishlist, JSON.stringify(w));
   },
   isWishlisted(pid) { return this.getWishlist().includes(pid); },
-  getOrders() { return JSON.parse(localStorage.getItem(sm_keys.orders)) || []; },
+  getOrders() { 
+    const os = JSON.parse(localStorage.getItem(sm_keys.orders)) || [];
+    return os.map(o => {
+      if (!o.date) o.date = o.timestamps && o.timestamps.placedAt ? new Date(o.timestamps.placedAt).getTime() : Date.now();
+      return o;
+    });
+  },
   createOrder(data) {
     const os = this.getOrders();
-    const o = { ...data, id: this.generateOrderId(), status: 'placed', statusHistory: [{ status: 'placed', timestamp: new Date().toISOString() }], timestamps: { placedAt: new Date().toISOString() } };
+    const now = Date.now();
+    const o = { ...data, id: this.generateOrderId(), status: 'placed', date: now, statusHistory: [{ status: 'placed', timestamp: new Date(now).toISOString() }], timestamps: { placedAt: new Date(now).toISOString() } };
     os.push(o); localStorage.setItem(sm_keys.orders, JSON.stringify(os)); this.clearCart(); return o;
   },
   updateOrderStatus(oid, status) {
