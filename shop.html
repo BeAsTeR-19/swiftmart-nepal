@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop All - SwiftMart Nepal</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="ann-bar" id="ann-bar">
+    Free delivery inside Kathmandu valley on orders over Rs 2,000
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner container">
+      <!-- LOGO -->
+      <a href="index.html" class="logo-link">
+        <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
+        <span class="logo-text">SwiftMart</span>
+      </a>
+
+      <!-- SEARCH -->
+      <div class="search-wrap">
+        <form id="search-form" action="shop.html" method="GET">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" name="q" placeholder="Search products..." id="search-input">
+        </form>
+      </div>
+
+      <!-- HEADER ACTIONS -->
+      <div class="hdr-actions">
+        <!-- Wishlist -->
+        <a href="shop.html?wishlist=true" class="hdr-btn" aria-label="Wishlist">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </a>
+        
+        <!-- Cart -->
+        <a href="cart.html" class="hdr-btn" aria-label="Cart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span class="cart-count">0</span>
+        </a>
+
+        <!-- Mobile Menu Btn -->
+        <button class="hdr-btn mob-menu-btn" id="mob-menu-btn" aria-label="Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- DESKTOP NAV -->
+    <nav class="nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop All</a></li>
+        <li><a href="shop.html?cat=Kitchen">Kitchen</a></li>
+        <li><a href="shop.html?cat=Desk+%26+Study">Desk & Study</a></li>
+        <li><a href="shop.html?cat=Home+Comfort">Home Comfort</a></li>
+        <li><a href="order-tracking.html">Track Order</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- MOBILE NAV -->
+  <div class="mob-nav" id="mob-nav">
+    <div class="mob-overlay" id="mob-overlay"></div>
+    <div class="mob-panel">
+      <button class="close-btn" id="mob-close-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div style="margin-top: 20px;">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop All</a>
+        <a href="shop.html?cat=Kitchen">Kitchen</a>
+        <a href="shop.html?cat=Desk+%26+Study">Desk & Study</a>
+        <a href="shop.html?cat=Home+Comfort">Home Comfort</a>
+        <a href="order-tracking.html">Track Order</a>
+        <a href="about.html">About Us</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> <span>/</span> <span id="bc-current">Shop All</span>
+    </div>
+
+    <div class="shop-layout">
+      <!-- SIDEBAR -->
+      <aside class="shop-sidebar">
+        <div class="filter-group">
+          <h3>Category</h3>
+          <label><input type="checkbox" value="Kitchen" class="filter-cat"> Kitchen</label>
+          <label><input type="checkbox" value="Desk & Study" class="filter-cat"> Desk & Study</label>
+          <label><input type="checkbox" value="Home Comfort" class="filter-cat"> Home Comfort</label>
+        </div>
+        
+        <div class="filter-group">
+          <h3>Price Range</h3>
+          <label><input type="checkbox" value="0-1000" class="filter-price"> Under Rs 1,000</label>
+          <label><input type="checkbox" value="1000-2000" class="filter-price"> Rs 1,000 - 2,000</label>
+          <label><input type="checkbox" value="2000-5000" class="filter-price"> Rs 2,000 - 5,000</label>
+          <label><input type="checkbox" value="5000-999999" class="filter-price"> Over Rs 5,000</label>
+        </div>
+        
+        <div class="filter-group">
+          <h3>Availability</h3>
+          <label><input type="checkbox" id="filter-stock"> In Stock Only</label>
+        </div>
+      </aside>
+
+      <!-- MAIN CATALOG -->
+      <main>
+        <div class="shop-sort">
+          <span class="shop-count" id="product-count">0 products</span>
+          <select id="sort-select">
+            <option value="new">Newest Arrivals</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="popular">Most Popular</option>
+          </select>
+        </div>
+
+        <div class="product-grid" id="shop-grid">
+          <!-- Products injected via JS -->
+        </div>
+        
+        <div id="empty-state" class="empty-state" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <h3>No products found</h3>
+          <p>Try adjusting your filters or search query.</p>
+          <button class="btn btn-outline" onclick="window.location.href='shop.html'">Clear Filters</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="flex items-center gap-2 mb-3">
+            <img src="assets/images/logo.jpeg" alt="Logo" style="height:32px; border-radius:4px;">
+            <span style="font-family:var(--font-h); font-weight:800; font-size:18px; letter-spacing:-0.5px; color:#fff;">SwiftMart</span>
+          </div>
+          <p>We are a small business based in Kathmandu bringing you genuinely useful everyday products. Reliable quality, honest pricing.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <div class="footer-links">
+            <a href="shop.html">Shop All</a>
+            <a href="order-tracking.html">Track Order</a>
+            <a href="about.html">About Us</a>
+            <a href="about.html#faq">FAQ & Delivery</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Contact Us</h3>
+          <div class="footer-links">
+            <p>Phone: +977 976-9753746</p>
+            <p>WhatsApp: 976-9753746</p>
+            <p>Email: contact@swiftmartnepal.com</p>
+            <p>Kathmandu, Nepal</p>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Payment Methods</h3>
+          <p class="mb-2">We accept Cash on Delivery and digital wallets.</p>
+          <div class="pay-badges">
+            <span class="pay-badge pay-cod">COD</span>
+            <span class="pay-badge pay-esewa">eSewa</span>
+            <span class="pay-badge pay-khalti">Khalti</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; <span id="year"></span> SwiftMart Nepal. All rights reserved.</div>
+        <div class="pay-badges" style="opacity:0.7">
+          <span class="pay-badge pay-cod">COD</span>
+          <span class="pay-badge pay-esewa">eSewa</span>
+          <span class="pay-badge pay-khalti">Khalti</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FLOAT -->
+  <a href="https://wa.me/9779769753746" target="_blank" class="wa-float" aria-label="Chat on WhatsApp">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="#ffffff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+  </a>
+
+  <!-- SCRIPTS -->
+  <script src="assets/js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      updateCartCount();
+
+      // Mobile menu toggle
+      const mobMenuBtn = document.getElementById('mob-menu-btn');
+      const mobCloseBtn = document.getElementById('mob-close-btn');
+      const mobNav = document.getElementById('mob-nav');
+      const mobOverlay = document.getElementById('mob-overlay');
+      mobMenuBtn.addEventListener('click', () => mobNav.classList.add('open'));
+      mobCloseBtn.addEventListener('click', () => mobNav.classList.remove('open'));
+      mobOverlay.addEventListener('click', () => mobNav.classList.remove('open'));
+
+      const settings = SM.getSettings();
+      if(settings.announcement) document.getElementById('ann-bar').textContent = settings.announcement;
+
+      // Filtering Logic
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get('q');
+      const category = params.get('cat');
+      const showWishlist = params.get('wishlist');
+
+      const catCheckboxes = document.querySelectorAll('.filter-cat');
+      const priceCheckboxes = document.querySelectorAll('.filter-price');
+      const stockCheckbox = document.getElementById('filter-stock');
+      const sortSelect = document.getElementById('sort-select');
+      const grid = document.getElementById('shop-grid');
+      const emptyState = document.getElementById('empty-state');
+      const countEl = document.getElementById('product-count');
+      const searchInput = document.getElementById('search-input');
+      const bcCurrent = document.getElementById('bc-current');
+
+      if(query) {
+        searchInput.value = query;
+        bcCurrent.textContent = `Search: "${query}"`;
+      } else if (category) {
+        catCheckboxes.forEach(cb => {
+          if(cb.value === category) cb.checked = true;
+        });
+        bcCurrent.textContent = category;
+      } else if (showWishlist) {
+        bcCurrent.textContent = 'My Wishlist';
+        document.title = 'Wishlist - SwiftMart Nepal';
+      }
+
+      function renderProducts() {
+        let products = SM.getProducts();
+
+        // 1. Wishlist Filter
+        if (showWishlist) {
+          const wishlistIds = JSON.parse(localStorage.getItem('sm_wishlist') || '[]');
+          products = products.filter(p => wishlistIds.includes(p.id));
+        }
+
+        // 2. Search Filter
+        const q = searchInput.value.toLowerCase();
+        if (q) {
+          products = products.filter(p => 
+            p.name.toLowerCase().includes(q) || 
+            p.category.toLowerCase().includes(q)
+          );
+        }
+
+        // 3. Category Filter
+        const selectedCats = Array.from(catCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+        if (selectedCats.length > 0) {
+          products = products.filter(p => selectedCats.includes(p.category));
+        }
+
+        // 4. Price Filter
+        const selectedPrices = Array.from(priceCheckboxes).filter(cb => cb.checked).map(cb => {
+          const [min, max] = cb.value.split('-');
+          return { min: parseInt(min), max: parseInt(max) };
+        });
+        if (selectedPrices.length > 0) {
+          products = products.filter(p => {
+            return selectedPrices.some(range => p.price >= range.min && p.price <= range.max);
+          });
+        }
+
+        // 5. Stock Filter
+        if (stockCheckbox.checked) {
+          products = products.filter(p => p.stock > 0);
+        }
+
+        // 6. Sort
+        const sortMode = sortSelect.value;
+        if (sortMode === 'price-asc') {
+          products.sort((a,b) => a.price - b.price);
+        } else if (sortMode === 'price-desc') {
+          products.sort((a,b) => b.price - a.price);
+        } else if (sortMode === 'popular') {
+          products.sort((a,b) => b.reviews - a.reviews);
+        } else {
+          // 'new' - reverse array assumes newer added last
+          products.reverse();
+        }
+
+        // Render
+        countEl.textContent = `${products.length} product${products.length !== 1 ? 's' : ''}`;
+        
+        if (products.length === 0) {
+          grid.innerHTML = '';
+          grid.style.display = 'none';
+          emptyState.style.display = 'block';
+        } else {
+          grid.style.display = 'grid';
+          emptyState.style.display = 'none';
+          grid.innerHTML = products.map(p => SM.productCard(p)).join('');
+        }
+      }
+
+      // Event Listeners
+      catCheckboxes.forEach(cb => cb.addEventListener('change', renderProducts));
+      priceCheckboxes.forEach(cb => cb.addEventListener('change', renderProducts));
+      stockCheckbox.addEventListener('change', renderProducts);
+      sortSelect.addEventListener('change', renderProducts);
+      
+      // Update on search input type
+      searchInput.addEventListener('input', () => {
+        // Debounce simple
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(renderProducts, 300);
+      });
+
+      // Initial render
+      renderProducts();
+    });
+  </script>
+</body>
+</html>

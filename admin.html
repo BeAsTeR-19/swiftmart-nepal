@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - SwiftMart Nepal</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    body { background: #f0f2f5; }
+    .auth-guard { display: none; }
+    .authenticated .auth-guard { display: block; }
+    .authenticated .pin-screen { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- PIN SCREEN -->
+  <div class="pin-screen" id="pin-screen">
+    <div class="pin-box">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="margin: 0 auto 16px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      <h2>Admin Access</h2>
+      <p>Please enter the admin PIN to continue</p>
+      <input type="password" class="pin-input" id="pin-input" maxlength="4" placeholder="••••">
+      <div id="pin-error" style="color:var(--red); font-size:13px; margin-top:8px; display:none;">Incorrect PIN</div>
+    </div>
+  </div>
+
+  <!-- ADMIN APP -->
+  <div class="auth-guard">
+    <div class="admin-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <img src="assets/images/logo.jpeg" style="height:32px; border-radius:4px;">
+        <h1 style="font-size:18px; color:#fff;">Store Management</h1>
+      </div>
+      <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.3); color:#fff; padding:6px 12px; font-size:13px;" onclick="logout()">
+        Lock Session
+      </button>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="tab-dashboard">Dashboard</button>
+      <button class="admin-tab" data-tab="tab-orders">Orders</button>
+      <button class="admin-tab" data-tab="tab-products">Products</button>
+      <button class="admin-tab" data-tab="tab-finances">Finances</button>
+      <button class="admin-tab" data-tab="tab-settings">Settings</button>
+      <a href="index.html" class="admin-tab" style="margin-left:auto; color:var(--text-2);">View Store &rarr;</a>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="admin-content" style="display:block;">
+      <div class="stat-cards">
+        <div class="stat-card">
+          <h4>Total Revenue</h4>
+          <div class="stat-val" id="dash-rev">Rs 0</div>
+        </div>
+        <div class="stat-card accent">
+          <h4>Orders (30 Days)</h4>
+          <div class="stat-val" id="dash-orders">0</div>
+        </div>
+        <div class="stat-card green">
+          <h4>Products Active</h4>
+          <div class="stat-val" id="dash-prods">0</div>
+        </div>
+      </div>
+
+      <div style="background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+        <h3 style="padding:16px 20px; border-bottom:1px solid var(--border); font-size:16px;">Recent Orders</h3>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="dash-recent-orders"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="tab-orders" class="admin-content" style="display:none;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <h2 style="font-size:20px;">Manage Orders</h2>
+      </div>
+      <div style="background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Customer Info</th>
+                <th>Items</th>
+                <th>Total (Payment)</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div id="tab-products" class="admin-content" style="display:none;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <h2 style="font-size:20px;">Product Inventory</h2>
+        <button class="btn btn-primary" onclick="openProductModal()">Add Product</button>
+      </div>
+      <div style="background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:70px;">Img</th>
+                <th>Name & Category</th>
+                <th>Price / Old</th>
+                <th>Stock</th>
+                <th>Badge</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINANCES TAB -->
+    <div id="tab-finances" class="admin-content" style="display:none;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <h2 style="font-size:20px;">Financial Overview</h2>
+      </div>
+      
+      <div class="stat-cards">
+        <div class="stat-card green">
+          <h4>Total Sales (Delivered)</h4>
+          <div class="stat-val" id="fin-sales">Rs 0</div>
+        </div>
+        <div class="stat-card accent">
+          <h4>Total Costs</h4>
+          <div class="stat-val" id="fin-costs">Rs 0</div>
+        </div>
+        <div class="stat-card">
+          <h4>Net Profit</h4>
+          <div class="stat-val" id="fin-profit">Rs 0</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr; gap:24px;">
+        <!-- Add Cost -->
+        <div style="background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+          <h3 style="margin-bottom:16px;">Log New Expense</h3>
+          <form id="cost-form" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group mb-0">
+              <label class="form-label">Amount (Rs)</label>
+              <input type="number" class="form-control" id="cost-amt" required>
+            </div>
+            <div class="form-group mb-0">
+              <label class="form-label">Category</label>
+              <select class="form-control" id="cost-cat" required>
+                <option value="Inventory">Inventory Purchase</option>
+                <option value="Delivery">Delivery/Logistics</option>
+                <option value="Marketing">Marketing/Ads</option>
+                <option value="Packaging">Packaging</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group mb-0" style="grid-column: span 2;">
+              <label class="form-label">Note/Description</label>
+              <input type="text" class="form-control" id="cost-note" required>
+            </div>
+            <button type="submit" class="btn btn-accent" style="grid-column: span 2;">Save Expense</button>
+          </form>
+        </div>
+
+        <!-- Costs List -->
+        <div style="background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+          <h3 style="padding:16px 20px; border-bottom:1px solid var(--border); font-size:16px;">Recent Expenses</h3>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Note</th>
+                <th>Amount</th>
+                <th>Act</th>
+              </tr>
+            </thead>
+            <tbody id="costs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="tab-settings" class="admin-content" style="display:none;">
+      <div style="max-width:600px; background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px;">
+        <h2 style="font-size:20px; margin-bottom:24px;">Store Settings</h2>
+        <form id="settings-form">
+          
+          <h3 style="font-size:15px; margin-bottom:12px;">Storefront</h3>
+          <div class="form-group">
+            <label class="form-label">Announcement Bar Text</label>
+            <input type="text" class="form-control" name="announcement" id="set-ann">
+          </div>
+
+          <h3 style="font-size:15px; margin-bottom:12px; margin-top:24px;">Delivery Rules</h3>
+          <div style="display:flex; gap:16px;">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Inside Valley Fee (Rs)</label>
+              <input type="number" class="form-control" name="deliveryFeeInside" id="set-fee-in" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Outside Valley Fee (Rs)</label>
+              <input type="number" class="form-control" name="deliveryFeeOutside" id="set-fee-out" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Free Delivery Threshold (Rs)</label>
+            <input type="number" class="form-control" name="freeDeliveryThreshold" id="set-free" required>
+          </div>
+
+          <h3 style="font-size:15px; margin-bottom:12px; margin-top:24px;">Admin Security</h3>
+          <div class="form-group">
+            <label class="form-label">Admin PIN (4 digits)</label>
+            <input type="text" class="form-control" name="adminPin" id="set-pin" maxlength="4" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary mt-3">Save Settings</button>
+        </form>
+      </div>
+    </div>
+
+  </div> <!-- End Auth Guard -->
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-bg" id="prod-modal">
+    <div class="modal-box" style="text-align:left; max-width:600px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 id="modal-title" style="margin:0; font-size:20px;">Add Product</h2>
+        <button class="btn btn-outline" style="padding:4px 8px;" onclick="closeProductModal()">X</button>
+      </div>
+      
+      <form id="prod-form">
+        <input type="hidden" id="pf-id">
+        
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" id="pf-name" required>
+        </div>
+        
+        <div style="display:flex; gap:16px;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Category</label>
+            <select class="form-control" id="pf-cat" required>
+              <option value="Kitchen">Kitchen</option>
+              <option value="Desk & Study">Desk & Study</option>
+              <option value="Home Comfort">Home Comfort</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Badge (Optional)</label>
+            <select class="form-control" id="pf-badge">
+              <option value="">None</option>
+              <option value="sale">Sale</option>
+              <option value="new">New</option>
+              <option value="hot">Hot</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Price (Rs)</label>
+            <input type="number" class="form-control" id="pf-price" required>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Old Price (Rs)</label>
+            <input type="number" class="form-control" id="pf-old">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Stock Quantity</label>
+            <input type="number" class="form-control" id="pf-stock" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Image URL</label>
+          <input type="text" class="form-control" id="pf-img" required placeholder="assets/images/prod_name.jpg">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" id="pf-desc" style="min-height:60px;" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Save Product</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- SCRIPTS -->
+  <script src="assets/js/data.js"></script>
+  <script>
+    // === AUTHENTICATION ===
+    const pinInput = document.getElementById('pin-input');
+    pinInput.addEventListener('keyup', (e) => {
+      const val = e.target.value;
+      if (val.length === 4) {
+        const settings = SM.getSettings();
+        if (val === settings.adminPin) {
+          document.body.classList.add('authenticated');
+          document.getElementById('pin-error').style.display = 'none';
+          e.target.value = '';
+          initAdmin();
+        } else {
+          document.getElementById('pin-error').style.display = 'block';
+          e.target.value = '';
+        }
+      }
+    });
+
+    function logout() {
+      document.body.classList.remove('authenticated');
+    }
+
+    // === TABS ===
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      if(!tab.dataset.tab) return;
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-content').forEach(c => c.style.display = 'none');
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).style.display = 'block';
+      });
+    });
+
+    // === RENDER LOGIC ===
+    function initAdmin() {
+      renderDashboard();
+      renderOrders();
+      renderProducts();
+      renderFinances();
+      renderSettings();
+    }
+
+    function renderDashboard() {
+      const orders = SM.getOrders();
+      const products = SM.getProducts();
+      
+      let rev = 0;
+      let orderCount = 0;
+      
+      // Calculate 30 days
+      const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+      
+      orders.forEach(o => {
+        if (o.date >= thirtyDaysAgo) {
+          orderCount++;
+          if (o.status !== 'cancelled') rev += o.total;
+        }
+      });
+
+      document.getElementById('dash-rev').textContent = SM.formatPrice(rev);
+      document.getElementById('dash-orders').textContent = orderCount;
+      document.getElementById('dash-prods').textContent = products.length;
+
+      // Recent 5
+      const recent = [...orders].sort((a,b) => b.date - a.date).slice(0, 5);
+      const tbody = document.getElementById('dash-recent-orders');
+      tbody.innerHTML = recent.map(o => `
+        <tr>
+          <td style="font-weight:600;">${o.id}</td>
+          <td>${o.customer.name}</td>
+          <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+          <td style="font-weight:600;">${SM.formatPrice(o.total)}</td>
+          <td>${new Date(o.date).toLocaleDateString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderOrders() {
+      const orders = [...SM.getOrders()].sort((a,b) => b.date - a.date);
+      const tbody = document.getElementById('orders-tbody');
+      
+      tbody.innerHTML = orders.map(o => {
+        const statuses = ['placed', 'confirmed', 'dispatched', 'delivered', 'cancelled'];
+        let selectHtml = `<select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:4px; font-size:12px; border:1px solid #ccc; border-radius:4px;">`;
+        statuses.forEach(s => {
+          selectHtml += `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`;
+        });
+        selectHtml += `</select>`;
+
+        return `
+        <tr>
+          <td style="font-weight:600;">${o.id}</td>
+          <td>
+            <div style="font-weight:600;">${o.customer.name}</div>
+            <div style="font-size:12px; color:var(--text-3);">${o.customer.phone} - ${o.customer.zone}</div>
+          </td>
+          <td>${o.items.length} items</td>
+          <td>
+            <div style="font-weight:600;">${SM.formatPrice(o.total)}</div>
+            <div style="font-size:12px; color:var(--text-3);">${o.payment.method}</div>
+          </td>
+          <td>${selectHtml}</td>
+          <td>
+            <button onclick="deleteOrder('${o.id}')" style="color:var(--red); background:none; border:none; cursor:pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `}).join('');
+    }
+
+    function updateOrderStatus(id, newStatus) {
+      let orders = SM.getOrders();
+      const o = orders.find(x => x.id === id);
+      if(o) {
+        o.status = newStatus;
+        localStorage.setItem('sm_orders', JSON.stringify(orders));
+        renderDashboard();
+        renderFinances(); // Delivery impacts revenue
+      }
+    }
+
+    function deleteOrder(id) {
+      if(confirm('Are you sure you want to delete this order?')) {
+        let orders = SM.getOrders().filter(x => x.id !== id);
+        localStorage.setItem('sm_orders', JSON.stringify(orders));
+        renderOrders();
+        renderDashboard();
+      }
+    }
+
+    // === PRODUCTS ===
+    function renderProducts() {
+      const products = SM.getProducts();
+      const tbody = document.getElementById('products-tbody');
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td><img src="${p.image}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;"></td>
+          <td>
+            <div style="font-weight:600;">${p.name}</div>
+            <div style="font-size:12px; color:var(--text-3);">${p.category}</div>
+          </td>
+          <td>
+            <div style="font-weight:600;">${SM.formatPrice(p.price)}</div>
+            ${p.oldPrice > p.price ? `<div style="font-size:12px; color:var(--text-3); text-decoration:line-through;">${SM.formatPrice(p.oldPrice)}</div>` : ''}
+          </td>
+          <td style="${p.stock < 5 ? 'color:var(--red); font-weight:600;' : ''}">${p.stock}</td>
+          <td>${p.badge ? `<span class="pc-badge badge-${p.badge}" style="position:static;">${p.badge}</span>` : '-'}</td>
+          <td>
+            <button onclick="editProduct('${p.id}')" style="background:none; border:none; cursor:pointer; color:var(--primary); margin-right:8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
+            <button onclick="deleteProduct('${p.id}')" style="background:none; border:none; cursor:pointer; color:var(--red);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openProductModal(id = null) {
+      const form = document.getElementById('prod-form');
+      form.reset();
+      document.getElementById('pf-id').value = '';
+      
+      if(id) {
+        document.getElementById('modal-title').textContent = 'Edit Product';
+        const p = SM.getProducts().find(x => x.id === id);
+        if(p) {
+          document.getElementById('pf-id').value = p.id;
+          document.getElementById('pf-name').value = p.name;
+          document.getElementById('pf-cat').value = p.category;
+          document.getElementById('pf-badge').value = p.badge || '';
+          document.getElementById('pf-price').value = p.price;
+          document.getElementById('pf-old').value = p.oldPrice || '';
+          document.getElementById('pf-stock').value = p.stock;
+          document.getElementById('pf-img').value = p.image;
+          document.getElementById('pf-desc').value = p.description;
+        }
+      } else {
+        document.getElementById('modal-title').textContent = 'Add Product';
+      }
+      
+      document.getElementById('prod-modal').classList.add('show');
+    }
+
+    function closeProductModal() {
+      document.getElementById('prod-modal').classList.remove('show');
+    }
+
+    function editProduct(id) { openProductModal(id); }
+
+    function deleteProduct(id) {
+      if(confirm('Delete product?')) {
+        let prods = SM.getProducts().filter(x => x.id !== id);
+        localStorage.setItem('sm_products', JSON.stringify(prods));
+        renderProducts();
+        renderDashboard();
+      }
+    }
+
+    document.getElementById('prod-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('pf-id').value;
+      const pData = {
+        name: document.getElementById('pf-name').value,
+        category: document.getElementById('pf-cat').value,
+        badge: document.getElementById('pf-badge').value,
+        price: parseInt(document.getElementById('pf-price').value),
+        oldPrice: parseInt(document.getElementById('pf-old').value) || 0,
+        stock: parseInt(document.getElementById('pf-stock').value),
+        image: document.getElementById('pf-img').value,
+        description: document.getElementById('pf-desc').value
+      };
+
+      let prods = SM.getProducts();
+      if(id) {
+        // Edit
+        const idx = prods.findIndex(x => x.id === id);
+        if(idx > -1) {
+          prods[idx] = { ...prods[idx], ...pData };
+        }
+      } else {
+        // Add
+        pData.id = 'prod_' + Date.now();
+        pData.reviews = 0;
+        pData.rating = 5.0;
+        prods.push(pData);
+      }
+
+      localStorage.setItem('sm_products', JSON.stringify(prods));
+      closeProductModal();
+      renderProducts();
+      renderDashboard();
+    });
+
+    // === FINANCES ===
+    function getCosts() {
+      return JSON.parse(localStorage.getItem('sm_costs') || '[]');
+    }
+
+    function renderFinances() {
+      const orders = SM.getOrders();
+      const costs = getCosts();
+
+      // Only count DELIVERED orders as confirmed revenue
+      const deliveredSales = orders.filter(o => o.status === 'delivered').reduce((sum, o) => sum + o.total, 0);
+      const totalCosts = costs.reduce((sum, c) => sum + c.amount, 0);
+      const profit = deliveredSales - totalCosts;
+
+      document.getElementById('fin-sales').textContent = SM.formatPrice(deliveredSales);
+      document.getElementById('fin-costs').textContent = SM.formatPrice(totalCosts);
+      document.getElementById('fin-profit').textContent = SM.formatPrice(profit);
+
+      const tbody = document.getElementById('costs-tbody');
+      tbody.innerHTML = [...costs].sort((a,b) => b.date - a.date).map(c => `
+        <tr>
+          <td>${new Date(c.date).toLocaleDateString()}</td>
+          <td><span style="background:var(--bg-alt); padding:2px 6px; border-radius:4px; font-size:12px;">${c.category}</span></td>
+          <td>${c.note}</td>
+          <td style="font-weight:600; color:var(--red);">${SM.formatPrice(c.amount)}</td>
+          <td>
+             <button onclick="deleteCost(${c.id})" style="color:var(--red); background:none; border:none; cursor:pointer;">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+             </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('cost-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const costs = getCosts();
+      costs.push({
+        id: Date.now(),
+        amount: parseInt(document.getElementById('cost-amt').value),
+        category: document.getElementById('cost-cat').value,
+        note: document.getElementById('cost-note').value,
+        date: Date.now()
+      });
+      localStorage.setItem('sm_costs', JSON.stringify(costs));
+      e.target.reset();
+      renderFinances();
+    });
+
+    function deleteCost(id) {
+      if(confirm('Delete this expense record?')) {
+        const costs = getCosts().filter(c => c.id !== id);
+        localStorage.setItem('sm_costs', JSON.stringify(costs));
+        renderFinances();
+      }
+    }
+
+    // === SETTINGS ===
+    function renderSettings() {
+      const s = SM.getSettings();
+      document.getElementById('set-ann').value = s.announcement;
+      document.getElementById('set-fee-in').value = s.deliveryFeeInside;
+      document.getElementById('set-fee-out').value = s.deliveryFeeOutside;
+      document.getElementById('set-free').value = s.freeDeliveryThreshold;
+      document.getElementById('set-pin').value = s.adminPin;
+    }
+
+    document.getElementById('settings-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const s = SM.getSettings();
+      s.announcement = document.getElementById('set-ann').value;
+      s.deliveryFeeInside = parseInt(document.getElementById('set-fee-in').value);
+      s.deliveryFeeOutside = parseInt(document.getElementById('set-fee-out').value);
+      s.freeDeliveryThreshold = parseInt(document.getElementById('set-free').value);
+      s.adminPin = document.getElementById('set-pin').value;
+      
+      localStorage.setItem('sm_settings', JSON.stringify(s));
+      alert('Settings Saved');
+    });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - SwiftMart Nepal</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body style="background:var(--bg-alt);">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner container">
+      <a href="index.html" class="logo-link">
+        <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
+        <span class="logo-text">SwiftMart</span>
+      </a>
+      <div style="margin-left:auto; font-weight:600; color:var(--text-2);">
+        Secure Checkout
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 32px 16px;">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> <span>/</span> <a href="cart.html">Cart</a> <span>/</span> <span>Checkout</span>
+    </div>
+
+    <div class="checkout-layout">
+      <!-- FORM -->
+      <main>
+        <form id="checkout-form">
+          <div style="background:#fff; border-radius:var(--radius-lg); padding:24px; border:1px solid var(--border); margin-bottom:24px;">
+            <h2 style="margin-bottom:20px; font-size:20px;">1. Delivery Information</h2>
+            
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Phone Number *</label>
+              <input type="tel" class="form-control" name="phone" required placeholder="e.g. 98XXXXXXXX">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Delivery Zone *</label>
+              <div class="radio-group">
+                <label class="radio-opt" style="flex:1;">
+                  <input type="radio" name="zone" value="inside" checked onchange="updateTotals()"> Inside Kathmandu Valley
+                </label>
+                <label class="radio-opt" style="flex:1;">
+                  <input type="radio" name="zone" value="outside" onchange="updateTotals()"> Outside Valley
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">City/Area *</label>
+              <input type="text" class="form-control" name="city" required placeholder="e.g. Baneshwor, Lalitpur">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Full Address *</label>
+              <textarea class="form-control" name="address" required placeholder="Street name, nearby landmarks, house number"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Order Notes (Optional)</label>
+              <textarea class="form-control" name="note" placeholder="Any special instructions for delivery"></textarea>
+            </div>
+          </div>
+
+          <div style="background:#fff; border-radius:var(--radius-lg); padding:24px; border:1px solid var(--border);">
+            <h2 style="margin-bottom:20px; font-size:20px;">2. Payment Method</h2>
+            
+            <div class="form-group">
+              <div class="radio-group" style="flex-direction:column;">
+                <label class="radio-opt" style="width:100%;">
+                  <input type="radio" name="paymentMethod" value="COD" checked onchange="togglePaymentDetails()">
+                  Cash on Delivery
+                </label>
+                
+                <label class="radio-opt" style="width:100%;">
+                  <input type="radio" name="paymentMethod" value="eSewa" onchange="togglePaymentDetails()">
+                  <span style="color:var(--esewa); font-weight:700;">eSewa</span>
+                </label>
+                
+                <label class="radio-opt" style="width:100%;">
+                  <input type="radio" name="paymentMethod" value="Khalti" onchange="togglePaymentDetails()">
+                  <span style="color:var(--khalti); font-weight:700;">Khalti</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Digital Payment Details -->
+            <div id="digital-payment-details" style="display:none; padding:16px; background:var(--bg-alt); border-radius:var(--radius); margin-top:16px;">
+              <p style="font-size:14px; margin-bottom:12px;">Please send the exact total amount to our account below:</p>
+              <div style="font-weight:700; font-size:18px; color:var(--primary); margin-bottom:4px;">976-9753746</div>
+              <div style="font-size:13px; color:var(--text-3); margin-bottom:16px;">Name: SwiftMart Nepal</div>
+              
+              <div class="form-group">
+                <label class="form-label">Transaction Remarks/ID *</label>
+                <input type="text" class="form-control" id="transaction-id" name="transactionId" placeholder="Enter the transaction code or sender name">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-accent btn-block btn-lg mt-4">Place Order</button>
+          </div>
+        </form>
+      </main>
+
+      <!-- SIDEBAR -->
+      <aside>
+        <div class="cart-summary" style="top: 24px;">
+          <h3 style="margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">Order Summary</h3>
+          <div id="checkout-items" style="margin-bottom:16px;"></div>
+          
+          <div class="cart-row">
+            <span>Subtotal</span>
+            <span id="co-subtotal">Rs 0</span>
+          </div>
+          <div class="cart-row">
+            <span>Delivery</span>
+            <span id="co-delivery">Rs 0</span>
+          </div>
+          <div class="cart-row total">
+            <span>Total</span>
+            <span id="co-total">Rs 0</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div class="modal-bg" id="success-modal">
+    <div class="modal-box">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" style="margin: 0 auto 16px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <h2>Order Placed Successfully!</h2>
+      <p>Your order ID is <strong id="modal-order-id" style="color:var(--text);"></strong>. We will contact you shortly to confirm the delivery.</p>
+      
+      <a href="#" id="wa-order-link" target="_blank" class="btn btn-wa btn-block mb-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        Send Order Details to WhatsApp
+      </a>
+      <a href="index.html" class="btn btn-outline btn-block">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="assets/js/data.js"></script>
+  <script>
+    let subtotalVal = 0;
+    let deliveryVal = 0;
+    let totalVal = 0;
+    let cartItems = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const cart = SM.getCart();
+      if(cart.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+      }
+
+      const products = SM.getProducts();
+      const itemsContainer = document.getElementById('checkout-items');
+      let html = '';
+
+      cart.forEach(item => {
+        const p = products.find(prod => prod.id === item.id);
+        if(!p) return;
+        const lineTotal = p.price * item.qty;
+        subtotalVal += lineTotal;
+        cartItems.push({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          qty: item.qty
+        });
+        
+        html += `
+          <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px;">
+            <div style="display:flex; gap:8px;">
+              <div style="width:40px; height:40px; border-radius:4px; border:1px solid var(--border); overflow:hidden;">
+                <img src="${p.image}" style="width:100%; height:100%; object-fit:contain;">
+              </div>
+              <div>
+                <div style="font-weight:600; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${p.name}</div>
+                <div style="color:var(--text-3);">Qty: ${item.qty}</div>
+              </div>
+            </div>
+            <div style="font-weight:600;">${SM.formatPrice(lineTotal)}</div>
+          </div>
+        `;
+      });
+      itemsContainer.innerHTML = html;
+
+      updateTotals();
+
+      document.getElementById('checkout-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const fd = new FormData(e.target);
+        const data = Object.fromEntries(fd.entries());
+        
+        if (data.paymentMethod !== 'COD' && !data.transactionId) {
+          SM.toast('Please enter the transaction ID for digital payment', 'error');
+          return;
+        }
+
+        const newOrder = SM.createOrder({
+          items: cartItems,
+          subtotal: subtotalVal,
+          deliveryFee: deliveryVal,
+          total: totalVal,
+          customer: {
+            name: data.name,
+            phone: data.phone,
+            zone: data.zone,
+            city: data.city,
+            address: data.address,
+            note: data.note || ''
+          },
+          payment: {
+            method: data.paymentMethod,
+            transactionId: data.transactionId || ''
+          }
+        });
+
+        // Clear cart
+        localStorage.removeItem('sm_cart');
+
+        // Show Success
+        document.getElementById('modal-order-id').textContent = newOrder.id;
+        
+        // WhatsApp Link Generator
+        const waNum = "9779769753746";
+        let waText = `Hello SwiftMart! I just placed an order on the website.\n\n*Order ID:* ${newOrder.id}\n*Total:* ${SM.formatPrice(totalVal)}\n*Name:* ${data.name}\n\nPlease confirm!`;
+        const waLink = `https://wa.me/${waNum}?text=${encodeURIComponent(waText)}`;
+        document.getElementById('wa-order-link').href = waLink;
+
+        document.getElementById('success-modal').classList.add('show');
+      });
+    });
+
+    function updateTotals() {
+      const settings = SM.getSettings();
+      const isInside = document.querySelector('input[name="zone"]:checked').value === 'inside';
+      
+      deliveryVal = isInside ? settings.deliveryFeeInside : settings.deliveryFeeOutside;
+      if (isInside && subtotalVal >= settings.freeDeliveryThreshold) {
+        deliveryVal = 0;
+      }
+
+      totalVal = subtotalVal + deliveryVal;
+
+      document.getElementById('co-subtotal').textContent = SM.formatPrice(subtotalVal);
+      document.getElementById('co-delivery').textContent = deliveryVal === 0 ? 'Free' : SM.formatPrice(deliveryVal);
+      document.getElementById('co-total').textContent = SM.formatPrice(totalVal);
+    }
+
+    function togglePaymentDetails() {
+      const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const detailsBox = document.getElementById('digital-payment-details');
+      const txInput = document.getElementById('transaction-id');
+      
+      if (method === 'COD') {
+        detailsBox.style.display = 'none';
+        txInput.required = false;
+      } else {
+        detailsBox.style.display = 'block';
+        txInput.required = true;
+      }
+    }
+  </script>
+</body>
+</html>

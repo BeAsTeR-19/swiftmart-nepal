@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwiftMart Nepal - Everyday products that actually make your home better</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="ann-bar" id="ann-bar">
+    Free delivery inside Kathmandu valley on orders over Rs 2,000
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner container">
+      <!-- LOGO -->
+      <a href="index.html" class="logo-link">
+        <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
+        <span class="logo-text">SwiftMart</span>
+      </a>
+
+      <!-- SEARCH -->
+      <div class="search-wrap">
+        <form id="search-form" action="shop.html" method="GET">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" name="q" placeholder="Search products..." required>
+        </form>
+      </div>
+
+      <!-- HEADER ACTIONS -->
+      <div class="hdr-actions">
+        <!-- Wishlist -->
+        <a href="shop.html?wishlist=true" class="hdr-btn" aria-label="Wishlist">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </a>
+        
+        <!-- Cart -->
+        <a href="cart.html" class="hdr-btn" aria-label="Cart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span class="cart-count">0</span>
+        </a>
+
+        <!-- Mobile Menu Btn -->
+        <button class="hdr-btn mob-menu-btn" id="mob-menu-btn" aria-label="Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- DESKTOP NAV -->
+    <nav class="nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop All</a></li>
+        <li><a href="shop.html?cat=Kitchen">Kitchen</a></li>
+        <li><a href="shop.html?cat=Desk+%26+Study">Desk & Study</a></li>
+        <li><a href="shop.html?cat=Home+Comfort">Home Comfort</a></li>
+        <li><a href="order-tracking.html">Track Order</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- MOBILE NAV -->
+  <div class="mob-nav" id="mob-nav">
+    <div class="mob-overlay" id="mob-overlay"></div>
+    <div class="mob-panel">
+      <button class="close-btn" id="mob-close-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div style="margin-top: 20px;">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop All</a>
+        <a href="shop.html?cat=Kitchen">Kitchen</a>
+        <a href="shop.html?cat=Desk+%26+Study">Desk & Study</a>
+        <a href="shop.html?cat=Home+Comfort">Home Comfort</a>
+        <a href="order-tracking.html">Track Order</a>
+        <a href="about.html">About Us</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <img src="assets/images/hero.jpg" alt="SwiftMart Nepal Hero">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1>Everyday products that actually make your home better</h1>
+        <p>Hard-to-find, useful household products — delivered to your door in Kathmandu valley in 1-2 days.</p>
+        <div class="flex" style="gap:12px; flex-wrap:wrap;">
+          <a href="shop.html" class="btn btn-accent btn-lg">Browse the Store</a>
+          <a href="https://wa.me/9779769753746" target="_blank" class="btn btn-wa btn-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            WhatsApp Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          Free delivery over Rs 2,000
+        </div>
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+          Cash on Delivery
+        </div>
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          1-2 Day Valley Delivery
+        </div>
+        <div class="trust-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          WhatsApp Support
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Shop by Category</h2>
+        <a href="shop.html">View All &rarr;</a>
+      </div>
+      <div class="cat-grid">
+        <div class="cat-card" onclick="window.location.href='shop.html?cat=Kitchen'">
+          <img src="assets/images/cat-kitchen.jpg" alt="Kitchen">
+          <div class="cat-card-overlay">
+            <h3>Kitchen</h3>
+          </div>
+        </div>
+        <div class="cat-card" onclick="window.location.href='shop.html?cat=Desk+%26+Study'">
+          <img src="assets/images/cat-desk.jpg" alt="Desk & Study">
+          <div class="cat-card-overlay">
+            <h3>Desk & Study</h3>
+          </div>
+        </div>
+        <div class="cat-card" onclick="window.location.href='shop.html?cat=Home+Comfort'">
+          <img src="assets/images/cat-comfort.jpg" alt="Home Comfort">
+          <div class="cat-card-overlay">
+            <h3>Home Comfort</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRENDING PRODUCTS -->
+  <section class="section" style="background:var(--bg-alt);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Trending Products</h2>
+        <a href="shop.html">View All &rarr;</a>
+      </div>
+      <div class="product-grid" id="trending-grid">
+        <!-- Products injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS SECTION -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" style="justify-content:center; text-align:center;">
+        <h2>What Our Customers Say</h2>
+      </div>
+      <div class="grid grid-cols-1-sm-2" style="gap:24px; max-width:900px; margin:0 auto;">
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">Ramesh T.</span>
+            <span class="review-city">Kathmandu</span>
+          </div>
+          <div class="pc-stars" style="margin-bottom:12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="review-text">"Really happy with the induction cooktop. Delivery was very fast to my home in Baneshwor, and the delivery dai was polite. Saved me during the gas shortage!"</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">Nita S.</span>
+            <span class="review-city">Lalitpur</span>
+          </div>
+          <div class="pc-stars" style="margin-bottom:12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="review-text">"The humidifier is a lifesaver. Finally sleeping better without a dry throat. Good genuine product, not the cheap plastic ones you usually find."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section text-center" style="background:#e0f2f1;">
+    <div class="container">
+      <h2 style="margin-bottom:16px;">Have questions?</h2>
+      <p style="margin-bottom:24px; color:var(--text-2);">Message us directly on WhatsApp. We reply fast!</p>
+      <a href="https://wa.me/9779769753746" target="_blank" class="btn btn-wa btn-lg">
+        Chat with Us
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="flex items-center gap-2 mb-3">
+            <img src="assets/images/logo.jpeg" alt="Logo" style="height:32px; border-radius:4px;">
+            <span style="font-family:var(--font-h); font-weight:800; font-size:18px; letter-spacing:-0.5px; color:#fff;">SwiftMart</span>
+          </div>
+          <p>We are a small business based in Kathmandu bringing you genuinely useful everyday products. Reliable quality, honest pricing.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <div class="footer-links">
+            <a href="shop.html">Shop All</a>
+            <a href="order-tracking.html">Track Order</a>
+            <a href="about.html">About Us</a>
+            <a href="about.html#faq">FAQ & Delivery</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Contact Us</h3>
+          <div class="footer-links">
+            <p>Phone: +977 976-9753746</p>
+            <p>WhatsApp: 976-9753746</p>
+            <p>Email: contact@swiftmartnepal.com</p>
+            <p>Kathmandu, Nepal</p>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Payment Methods</h3>
+          <p class="mb-2">We accept Cash on Delivery and digital wallets.</p>
+          <div class="pay-badges">
+            <span class="pay-badge pay-cod">COD</span>
+            <span class="pay-badge pay-esewa">eSewa</span>
+            <span class="pay-badge pay-khalti">Khalti</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; <span id="year"></span> SwiftMart Nepal. All rights reserved.</div>
+        <div class="pay-badges" style="opacity:0.7">
+          <span class="pay-badge pay-cod">COD</span>
+          <span class="pay-badge pay-esewa">eSewa</span>
+          <span class="pay-badge pay-khalti">Khalti</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FLOAT -->
+  <a href="https://wa.me/9779769753746" target="_blank" class="wa-float" aria-label="Chat on WhatsApp">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="#ffffff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+  </a>
+
+  <!-- SCRIPTS -->
+  <script src="assets/js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      const settings = SM.getSettings();
+      if(settings.announcement) {
+        document.getElementById('ann-bar').textContent = settings.announcement;
+      }
+
+      updateCartCount();
+
+      // Mobile menu toggle
+      const mobMenuBtn = document.getElementById('mob-menu-btn');
+      const mobCloseBtn = document.getElementById('mob-close-btn');
+      const mobNav = document.getElementById('mob-nav');
+      const mobOverlay = document.getElementById('mob-overlay');
+
+      mobMenuBtn.addEventListener('click', () => mobNav.classList.add('open'));
+      mobCloseBtn.addEventListener('click', () => mobNav.classList.remove('open'));
+      mobOverlay.addEventListener('click', () => mobNav.classList.remove('open'));
+
+      // Render Trending (first 8 products)
+      const products = SM.getProducts().slice(0, 8);
+      const grid = document.getElementById('trending-grid');
+      let html = '';
+      products.forEach(p => {
+        html += SM.productCard(p);
+      });
+      grid.innerHTML = html;
+    });
+  </script>
+</body>
+</html>
