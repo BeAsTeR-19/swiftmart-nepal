@@ -11,9 +11,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --crimson:#8E1F2F;--crimson-dark:#6E1622;--cream:#F6EFE2;--cream2:#EFE4CE;
-  --gold:#C99B3F;--gold-soft:#E4C77E;--ink:#33211E;--ok:#3E7A4E;
-  --disp:'Rozha One',serif;--body:'Mukta',sans-serif;
+  --crimson: var(--primary, #1a2744);
+  --crimson-dark: var(--primary-light, #2a3f66);
+  --cream: var(--bg-alt, #f5f5f5);
+  --cream2: var(--border, #e5e5e5);
+  --gold: var(--accent, #c65d1a);
+  --gold-soft: var(--accent-hover, #b35116);
+  --ink: var(--text, #1c1c1c);
+  --ok: var(--success, #2e7d32);
+  --disp: var(--font-h, sans-serif);
+  --body: var(--font, sans-serif);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--cream);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
@@ -168,6 +175,8 @@ h2{font-family:var(--disp);font-weight:400;font-size:clamp(24px,3vw,34px)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,80px);background:var(--crimson);color:var(--cream);padding:13px 26px;font-size:13.5px;z-index:120;transition:.3s;opacity:0;border-radius:3px;border-bottom:3px solid var(--gold)}
 .toast.on{transform:translate(-50%,0);opacity:1}
 </style>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 </head>
 <body>
 
@@ -204,7 +213,7 @@ h2{font-family:var(--disp);font-weight:400;font-size:clamp(24px,3vw,34px)}
     <!-- ORDERS -->
     <div class="view on" id="view-orders">
       <div class="phead" style="margin:0 0 6px">
-        <div><h2>Orders</h2><div class="subtle">Manage customer orders from the storefront.</div></div>
+        <div><h2>Orders</h2><div class="subtle">Manage customer orders from the storefront.</div></div><button class="btn btn-crimson" onclick="openCustomOrderModal()">+ Create Custom Order</button>
       </div>
       <div class="stats" id="stats"></div>
       <div class="chips" id="oChips"></div>
@@ -456,6 +465,41 @@ window.deleteOrder = function(id) {
   }
 };
 
+
+let cropper = null;
+
+// This will run when the file input changes
+document.addEventListener('change', function(e) {
+  if(e.target && e.target.id === 'fpImgFile') {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        $('cropImage').src = event.target.result;
+        $('cropContainer').style.display = 'block';
+        $('fpImg').value = ''; // clear url input since we are uploading
+        if(cropper) { cropper.destroy(); }
+        cropper = new Cropper($('cropImage'), {
+          aspectRatio: 1, // 1:1 square ratio for product images
+          viewMode: 2
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});
+
+window.applyCrop = function() {
+  if(!cropper) return;
+  const canvas = cropper.getCroppedCanvas({
+    width: 600,
+    height: 600
+  });
+  $('fpImg').value = canvas.toDataURL('image/jpeg', 0.8);
+  $('cropContainer').style.display = 'none';
+  toast('Image cropped successfully');
+};
+
 // --- Products ---
 function renderProducts() {
   $('pCount').textContent = PRODUCTS.length + ' products in store';
@@ -495,8 +539,27 @@ window.editProduct = function(id) {
       <div><label>Old Price (Rs)</label><input type="number" id="fpOld" value="${p ? p.oldPrice||0 : 0}"></div>
     </div>
     <div class="row2">
-      <div><label>Stock</label><input type="number" id="fpStock" value="${p ? p.stock : 10}"></div>
-      <div><label>Image URL</label><input type="text" id="fpImg" value="${p ? esc(p.image) : ''}"></div>
+      <div><label>Stock & Availability</label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="number" id="fpStock" value="${p ? p.stock : 10}" style="flex:1">
+          <label style="margin:0;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="checkbox" id="fpOutStock" ${p && p.stock < 1 ? 'checked' : ''} style="width:auto;"> Out of stock</label>
+        </div>
+      </div>
+      <div>
+        <label>Image (Upload or URL)</label>
+        <input type="file" id="fpImgFile" accept="image/*" style="margin-bottom:6px">
+        <div id="cropContainer" style="display:none; margin:10px 0;">
+          <div style="max-height:300px; overflow:hidden;">
+            <img id="cropImage" style="max-width:100%; display:block;">
+          </div>
+          <div style="display:flex;gap:10px;margin-top:10px;">
+            <button class="btn btn-line" type="button" onclick="cropper.rotate(-90)">Rotate Left</button>
+            <button class="btn btn-line" type="button" onclick="cropper.rotate(90)">Rotate Right</button>
+            <button class="btn btn-gold" type="button" onclick="applyCrop()">Apply Crop</button>
+          </div>
+        </div>
+        <input type="text" id="fpImg" value="${p ? esc(p.image) : ''}" placeholder="Or enter Image URL">
+      </div>
     </div>
     <label>Description</label><textarea id="fpDesc">${p ? esc(p.description) : ''}</textarea>
     <div class="foot">
@@ -505,16 +568,26 @@ window.editProduct = function(id) {
   `);
 };
 
-window.saveProduct = function() {
+window.saveProduct = async function() {
   const id = $('fpId').value;
+  let imgVal = $('fpImg').value;
+  const fileInput = $('fpImgFile');
+  if (!$('fpImg').value && fileInput && fileInput.files && fileInput.files[0]) {
+    // Fallback if user didn't hit 'Apply Crop'
+    imgVal = await new Promise(res => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result);
+      reader.readAsDataURL(fileInput.files[0]);
+    });
+  }
   const pData = {
     name: $('fpName').value,
     category: $('fpCat').value,
     badge: $('fpBadge').value,
     price: parseInt($('fpPrice').value),
     oldPrice: parseInt($('fpOld').value) || 0,
-    stock: parseInt($('fpStock').value),
-    image: $('fpImg').value,
+    stock: $('fpOutStock').checked ? 0 : parseInt($('fpStock').value),
+    image: imgVal,
     description: $('fpDesc').value
   };
   
@@ -591,6 +664,87 @@ window.deleteCost = function(id) {
   }
 };
 
+
+window.openCustomOrderModal = function() {
+  const prods = PRODUCTS.map(p => `<option value="${p.id}">${esc(p.name)} - ${SM.formatPrice(p.price)}</option>`).join('');
+  openModal(`
+    <h3>Create Custom Order</h3>
+    <div class="row2">
+      <div><label>Customer Name</label><input type="text" id="coName"></div>
+      <div><label>Phone Number</label><input type="text" id="coPhone"></div>
+    </div>
+    <div class="row2">
+      <div><label>City</label><input type="text" id="coCity" value="Kathmandu"></div>
+      <div><label>Zone</label>
+        <select id="coZone">
+          <option value="Inside Kathmandu Valley">Inside Kathmandu Valley</option>
+          <option value="Outside Valley">Outside Valley</option>
+        </select>
+      </div>
+    </div>
+    <label>Address</label><input type="text" id="coAddress">
+    <label>Product</label>
+    <div style="display:flex;gap:10px;">
+      <select id="coProd" style="flex:1">${prods}</select>
+      <input type="number" id="coQty" value="1" min="1" style="width:80px" title="Quantity">
+    </div>
+    <div class="foot" style="margin-top:16px;">
+      <button class="btn btn-crimson" onclick="saveCustomOrder()">Create Order</button>
+    </div>
+  `);
+};
+
+window.saveCustomOrder = function() {
+  const name = $('coName').value;
+  const phone = $('coPhone').value;
+  const city = $('coCity').value;
+  const zone = $('coZone').value;
+  const address = $('coAddress').value;
+  const prodId = $('coProd').value;
+  const qty = parseInt($('coQty').value) || 1;
+  
+  if(!name || !phone || !address) return toast('Fill all customer details');
+  
+  const p = PRODUCTS.find(x => x.id === prodId);
+  if(!p) return toast('Product not found');
+  
+  const item = {
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    image: p.image,
+    quantity: qty
+  };
+  
+  const s = SM.getSettings();
+  const subtotal = p.price * qty;
+  let deliveryFee = 0;
+  if (subtotal < s.freeDeliveryThreshold) {
+    deliveryFee = zone === 'Inside Kathmandu Valley' ? s.deliveryFeeInside : s.deliveryFeeOutside;
+  }
+  
+  const order = {
+    id: 'ORD' + Date.now().toString().slice(-6),
+    date: Date.now(),
+    customer: { name, phone, zone, city, address, note: 'Custom Order' },
+    payment: { method: 'Cash on Delivery', status: 'pending' },
+    items: [item],
+    subtotal: subtotal,
+    deliveryFee: deliveryFee,
+    total: subtotal + deliveryFee,
+    status: 'placed'
+  };
+  
+  let orders = SM.getOrders();
+  orders.push(order);
+  localStorage.setItem('sm_orders', JSON.stringify(orders));
+  
+  ORDERS = orders.sort((a,b) => b.date - a.date);
+  closeModal();
+  renderOrdersView();
+  toast('Custom order created');
+};
+
 // --- Settings ---
 function renderSettings() {
   const s = SM.getSettings();
@@ -613,5 +767,6 @@ $('saveSettings').onclick = () => {
   toast('Settings saved');
 };
 </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </body>
 </html>

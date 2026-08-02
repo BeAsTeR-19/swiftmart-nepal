@@ -241,6 +241,7 @@ const SM = {
           ${p.oldPrice ? `<span class="pc-old">${this.formatPrice(p.oldPrice)}</span>` : ''}
           ${p.oldPrice ? `<span class="pc-discount">-${Math.round((1 - p.price / p.oldPrice) * 100)}%</span>` : ''}
         </div>
+        ${p.stock < 5 ? `<div style="color:var(--red); font-size: 13px; font-weight: 600; margin-bottom: 8px;">Only ${p.stock} stocks left!</div>` : ''}
         <button class="pc-cart-btn" onclick="event.stopPropagation();SM.addToCart('${p.id}');showToast('Added to cart');updateCartCount();">Add to Cart</button>
       </div>
     </div>`;
