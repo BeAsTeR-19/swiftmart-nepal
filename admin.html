@@ -188,7 +188,8 @@ h2{font-family:var(--disp);font-weight:400;font-size:clamp(24px,3vw,34px)}
     <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal">
     <h1>Store Admin</h1>
     <p>Sign in to manage orders & products</p>
-    <input id="liPass" type="password" placeholder="PIN" autocomplete="off" maxlength="4">
+    <input id="liUser" type="text" placeholder="Username" autocomplete="off" style="text-align:left; letter-spacing:normal;">
+    <input id="liPass" type="password" placeholder="Password" autocomplete="off" style="text-align:left; letter-spacing:normal;">
     <button class="btn btn-crimson" style="width:100%" id="liBtn">Enter</button>
     <div class="err" id="liErr"></div>
   </div>
@@ -320,22 +321,35 @@ function closeModal() {
 $('overlay').onclick = closeModal;
 
 // --- Auth ---
+function checkAuth() {
+  if (localStorage.getItem('sm_admin_auth') === '1') {
+    $('loginView').style.display = 'none';
+    $('shell').classList.add('on');
+    initApp();
+  }
+}
+checkAuth();
+
 $('liBtn').onclick = login;
 $('liPass').addEventListener('keydown', e => { if(e.key === 'Enter') login(); });
+$('liUser').addEventListener('keydown', e => { if(e.key === 'Enter') login(); });
 function login() {
-  const val = $('liPass').value;
-  const s = SM.getSettings();
-  if (val === s.adminPin) {
+  const user = $('liUser').value;
+  const pass = $('liPass').value;
+  if (user === 'swiftmart' && pass === 'taylorswift') {
+    localStorage.setItem('sm_admin_auth', '1');
     $('loginView').style.display = 'none';
     $('shell').classList.add('on');
     $('liErr').textContent = '';
     $('liPass').value = '';
+    $('liUser').value = '';
     initApp();
   } else {
-    $('liErr').textContent = 'Incorrect PIN';
+    $('liErr').textContent = 'Incorrect Username or Password';
   }
 }
 $('signOut').onclick = () => {
+  localStorage.removeItem('sm_admin_auth');
   $('loginView').style.display = 'flex';
   $('shell').classList.remove('on');
 };
