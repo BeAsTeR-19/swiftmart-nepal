@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Register - SwiftMart Nepal</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
+  <style>
+    .auth-page {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg-alt);
+    }
+    .auth-brand {
+      display: none;
+      width: 45%;
+      background: var(--primary);
+      color: #fff;
+      padding: 40px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .auth-brand img {
+      width: 120px;
+      margin-bottom: 24px;
+    }
+    .auth-brand h1 {
+      color: #fff;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-brand p {
+      color: rgba(255,255,255,0.8);
+      font-size: 16px;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+    .auth-form-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+    .auth-form-wrapper {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+    .auth-header h2 {
+      margin-bottom: 8px;
+    }
+    .auth-header p {
+      color: var(--text-2);
+      margin-bottom: 24px;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+    .auth-tabs button {
+      flex: 1;
+      padding: 10px 0;
+      background: none;
+      border: none;
+      font-weight: 600;
+      color: var(--text-3);
+      cursor: pointer;
+      position: relative;
+      font-size: 15px;
+    }
+    .auth-tabs button.active {
+      color: var(--primary);
+    }
+    .auth-tabs button.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+    .social-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .social-btn:hover {
+      background: var(--bg-alt);
+    }
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--text-3);
+      margin: 24px 0;
+      font-size: 13px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+    .divider::before { margin-right: 12px; }
+    .divider::after { margin-left: 12px; }
+    .auth-error {
+      color: var(--red);
+      font-size: 13px;
+      margin-bottom: 16px;
+      font-weight: 500;
+      display: none;
+    }
+    @media(min-width: 768px) {
+      .auth-brand { display: flex; }
+      .auth-form-panel { padding: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
+  <div class="auth-page">
+    <div class="auth-brand">
+      <img src="assets/images/logo.svg" alt="SwiftMart Logo">
+      <h1>SwiftMart</h1>
+      <p>Everyday products that actually make your home better. Delivered in 1 day in Kathmandu.</p>
+    </div>
+    
+    <div class="auth-form-panel">
+      <div class="auth-form-wrapper">
+        <div class="auth-header">
+          <h2 id="form-title">Welcome back</h2>
+          <p id="form-subtitle">Sign in to your SwiftMart account</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="active" id="tab-login" onclick="setMode('login')">Sign In</button>
+          <button id="tab-register" onclick="setMode('register')">Register</button>
+        </div>
+
+        <button type="button" class="social-btn" onclick="signInWithGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="divider">or continue with email</div>
+
+        <div id="auth-error" class="auth-error"></div>
+
+        <form id="auth-form" onsubmit="handleAuth(event)">
+          <div class="form-group" id="name-group" style="display:none;">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="auth-name" class="form-control" placeholder="Jane Doe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="auth-email" class="form-control" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn" style="margin-top: 10px;">Sign In</button>
+        </form>
+        
+        <div style="text-align:center; margin-top: 24px;">
+          <a href="index.html" style="font-size:14px; color:var(--text-2); text-decoration:underline;">Return to Store</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

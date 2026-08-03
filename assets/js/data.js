@@ -304,7 +304,7 @@ const SM = {
           ${p.oldPrice ? `<span class="pc-discount">-${Math.round((1 - p.price / p.oldPrice) * 100)}%</span>` : ''}
         </div>
         ${p.stock < 5 ? `<div style="color:var(--red); font-size: 13px; font-weight: 600; margin-bottom: 8px;">Only ${p.stock} stocks left!</div>` : ''}
-        <button class="pc-cart-btn" onclick="event.stopPropagation();SM.addToCart('${p.id}');showToast('Added to cart');updateCartCount();">Add to Cart</button>
+        <button class="pc-cart-btn" onclick="event.stopPropagation();SM.addToCart('${p.id}');showToast('Added to cart', 'success', '${p.name.replace(/'/g, "\\'")}');updateCartCount();">Add to Cart</button>
       </div>
     </div>`;
   }
@@ -314,15 +314,33 @@ setTimeout(() => { SM.init(); }, 100);
 
 
 /* Toast */
-function showToast(msg, type = 'success') {
+function showToast(msg, type = 'success', subtitle = '') {
   let c = document.getElementById('toast-container');
   if (!c) { c = document.createElement('div'); c.id = 'toast-container'; document.body.appendChild(c); }
-  const t = document.createElement('div'); t.className = 'toast toast-' + type; t.textContent = msg; c.appendChild(t);
+  const t = document.createElement('div'); t.className = 'toast toast-' + type; 
+  const icon = type === 'success' ? `<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : '';
+  t.innerHTML = `<div class="toast-head">${icon}${msg}</div>${subtitle ? '<div class="toast-body">' + subtitle + '</div>' : ''}`;
+  c.appendChild(t);
   requestAnimationFrame(() => t.classList.add('show'));
-  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2500);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3500);
 }
 function updateCartCount() {
   document.querySelectorAll('.cart-count').forEach(el => {
     const c = SM.getCartCount(); el.textContent = c; el.style.display = c > 0 ? 'flex' : 'none';
   });
 }
+
+firebase.auth().onAuthStateChanged(user => {
+  const nameEl = document.getElementById('hdr-user-name');
+  if (user && nameEl) {
+    nameEl.textContent = user.displayName || user.email.split('@')[0];
+    document.getElementById('hdr-user').href = 'javascript:void(0);'; // For now, maybe an account page later
+    document.getElementById('hdr-user').onclick = async (e) => {
+      e.preventDefault();
+      if (confirm('Log out?')) {
+        await firebase.auth().signOut();
+        window.location.reload();
+      }
+    };
+  }
+});
