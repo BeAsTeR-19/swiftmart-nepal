@@ -13,7 +13,7 @@ const defaultSettings = {
   phone: '+977 976-9753746',
   whatsapp: '9779769753746',
   facebook: 'https://www.facebook.com/profile.php?id=61592544157695',
-  announcement: 'Free delivery everywhere on orders over Rs 3,000',
+  announcement: 'Free delivery all over Nepal on orders over Rs 3,000!',
   deliveryFeeValley: 100,
   deliveryFeeOutside: 200,
   freeDeliveryThreshold: 3000,
@@ -27,7 +27,7 @@ const defaultSettings = {
 let _existingSettings = JSON.parse(localStorage.getItem(sm_keys.settings) || 'null');
 if (_existingSettings && _existingSettings.freeDeliveryThreshold === 2000) {
   _existingSettings.freeDeliveryThreshold = 3000;
-  _existingSettings.announcement = 'Free delivery everywhere on orders over Rs 3,000';
+  _existingSettings.announcement = 'Free delivery all over Nepal on orders over Rs 3,000!';
   _existingSettings.valleyDeliveryDays = '1';
   localStorage.setItem(sm_keys.settings, JSON.stringify(_existingSettings));
 }
