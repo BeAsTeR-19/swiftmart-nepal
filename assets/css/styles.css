@@ -49,7 +49,7 @@ ul,ol{list-style:none}
 .logo-text{font-family:var(--font-h);font-size:20px;font-weight:800;color:#fff;letter-spacing:-.5px}
 .search-wrap{flex:1;max-width:560px;position:relative;display:none}
 .search-wrap form{display:flex;border:1.5px solid var(--primary);border-radius:100px;overflow:hidden;background:#fff;}
-.search-wrap input{flex:1;border:none;padding:10px 16px;outline:none;font-size:14px;color:var(--text);}
+.search-wrap input{flex:1;border:none;padding:10px 16px;outline:none;font-size:16px;color:var(--text);}
 .search-btn{background:var(--primary-light);color:#fff;border:none;padding:0 24px;font-weight:600;cursor:pointer;transition:background 0.2s}
 .search-btn:hover{background:var(--primary)}
 
@@ -161,7 +161,7 @@ ul,ol{list-style:none}
 /* ===== FORMS ===== */
 .form-group{margin-bottom:16px}
 .form-label{display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text)}
-.form-control{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:#fff;color:var(--text);font-size:14px;transition:border-color .15s,box-shadow .15s}
+.form-control{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:#fff;color:var(--text);font-size:16px;transition:border-color .15s,box-shadow .15s}
 .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,31,91,.08)}
 textarea.form-control{min-height:80px;resize:vertical}
 .radio-group{display:flex;gap:12px;flex-wrap:wrap}
@@ -208,8 +208,8 @@ textarea.form-control{min-height:80px;resize:vertical}
 .pd-old-price{font-size:18px;color:var(--text-3);text-decoration:line-through}
 .pd-actions{display:flex;gap:12px;margin:20px 0;flex-wrap:wrap}
 .qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.qty-ctrl button{width:36px;height:40px;border:none;background:var(--bg-alt);cursor:pointer;font-size:18px;font-weight:600}
-.qty-ctrl span{width:44px;text-align:center;font-weight:600;font-size:15px}
+.qty-ctrl button{width:44px;height:44px;border:none;background:var(--bg-alt);cursor:pointer;font-size:20px;font-weight:600}
+.qty-ctrl span{width:44px;text-align:center;font-weight:600;font-size:16px}
 .pd-specs{margin-top:24px}
 .pd-specs table{width:100%;border-collapse:collapse}
 .pd-specs td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:14px}
