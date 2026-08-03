@@ -154,6 +154,11 @@ const SM = {
       this._settings = defaultSettings;
     } else {
       this._settings = settingsSnap.data();
+      // Auto-migrate old announcement
+      if (this._settings.announcement === 'Free delivery everywhere on orders over Rs 3,000') {
+        this._settings.announcement = 'Free delivery all over Nepal on orders over Rs 3,000!';
+        db.collection('settings').doc('store').update({ announcement: this._settings.announcement }).catch(e => console.error(e));
+      }
     }
     
     const prodSnap = await db.collection('products').get();
