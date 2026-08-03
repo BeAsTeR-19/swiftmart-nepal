@@ -498,7 +498,7 @@
       const isInside = zoneSelect ? zoneSelect.value === 'inside' : true;
       
       deliveryVal = isInside ? settings.deliveryFeeInside : settings.deliveryFeeOutside;
-      if (isInside && subtotalVal >= settings.freeDeliveryThreshold) {
+      if (subtotalVal >= settings.freeDeliveryThreshold) {
         deliveryVal = 0;
       }
 
