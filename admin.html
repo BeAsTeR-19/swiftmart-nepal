@@ -665,59 +665,150 @@ window.deleteCost = function(id) {
 };
 
 
+let coItems = [];
+
 window.openCustomOrderModal = function() {
+  coItems = [];
   const prods = PRODUCTS.map(p => `<option value="${p.id}">${esc(p.name)} - ${SM.formatPrice(p.price)}</option>`).join('');
+  
   openModal(`
-    <h3>Create Custom Order</h3>
+    <h3>Add Order</h3>
+    <div style="font-size:12.5px;color:var(--text-3);font-weight:300;margin:2px 0 6px">For orders that came in on TikTok, WhatsApp, Instagram or in person.</div>
     <div class="row2">
-      <div><label>Customer Name</label><input type="text" id="coName"></div>
-      <div><label>Phone Number</label><input type="text" id="coPhone"></div>
+      <div><label>Where from? *</label>
+        <select id="coSource">
+          <option>TikTok</option>
+          <option>WhatsApp</option>
+          <option>Instagram</option>
+          <option>In person</option>
+          <option>Phone</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div><label>Starting status</label>
+        <select id="coStatus">
+          <option value="placed" selected>Placed</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
     </div>
     <div class="row2">
-      <div><label>City</label><input type="text" id="coCity" value="Kathmandu"></div>
+      <div><label>Customer Name *</label><input type="text" id="coName" placeholder="e.g. Anjali Sharma"></div>
+      <div><label>Phone / WhatsApp *</label><input type="text" id="coPhone" placeholder="98XXXXXXXX"></div>
+    </div>
+    <div class="row2">
       <div><label>Zone</label>
         <select id="coZone">
           <option value="Inside Kathmandu Valley">Inside Kathmandu Valley</option>
           <option value="Outside Valley">Outside Valley</option>
         </select>
       </div>
+      <div><label>City / Address</label><input type="text" id="coAddress" placeholder="Optional details"></div>
     </div>
-    <label>Address</label><input type="text" id="coAddress">
-    <label>Product</label>
-    <div style="display:flex;gap:10px;">
-      <select id="coProd" style="flex:1">${prods}</select>
-      <input type="number" id="coQty" value="1" min="1" style="width:80px" title="Quantity">
+    <label>Note (TikTok handle, etc.)</label><input type="text" id="coNote" maxlength="500">
+    <label>Items *</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <select id="coPick" style="flex:1;min-width:180px">${prods}</select>
+      <button type="button" class="btn btn-line" id="coAddPick" style="padding:9px 16px">Add</button>
+      <button type="button" class="btn btn-line" id="coAddCustom" style="padding:9px 16px">+ Custom item</button>
     </div>
+    <div id="coList"></div>
+    <div style="text-align:right;font-weight:700;font-size:15px;margin-top:10px">Total: <span id="coTotal">Rs 0</span></div>
+    
+    <label>Payment</label>
+    <select id="coPay">
+      <option value="Cash on Delivery">Cash on delivery</option>
+      <option value="eSewa">eSewa</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+      <option value="Already Paid">Already paid</option>
+    </select>
+    <div class="err" id="coErr"></div>
     <div class="foot" style="margin-top:16px;">
-      <button class="btn btn-crimson" onclick="saveCustomOrder()">Create Order</button>
+      <button class="btn btn-crimson" id="coSave">Add order</button>
     </div>
   `);
+
+  renderCoItems();
+
+  document.getElementById("coAddPick").onclick = () => {
+    const p = PRODUCTS.find(x => x.id === document.getElementById("coPick").value);
+    if(!p) return;
+    const ex = coItems.find(i => i.id === p.id);
+    if(ex) {
+      ex.quantity++;
+    } else {
+      coItems.push({ id: p.id, name: p.name, price: p.price, image: p.image, quantity: 1 });
+    }
+    renderCoItems();
+  };
+
+  document.getElementById("coAddCustom").onclick = () => {
+    coItems.push({ id: "custom", name: "", price: 0, image: "", quantity: 1 });
+    renderCoItems();
+  };
+
+  document.getElementById("coSave").onclick = saveCustomOrder;
 };
 
+function updCoTotal() {
+  const t = coItems.reduce((s,i) => s + (Number(i.price)||0) * (Number(i.quantity)||0), 0);
+  const el = document.getElementById("coTotal");
+  if(el) el.textContent = SM.formatPrice(t);
+}
+
+function renderCoItems() {
+  const box = document.getElementById("coList");
+  if(!box) return;
+  box.innerHTML = coItems.length ? coItems.map((it, i) => `
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <input data-f="name" data-i="${i}" value="${esc(it.name)}" placeholder="Item name" style="flex:2;min-width:120px;padding:9px 11px;border:1px solid var(--border);border-radius:3px;">
+      <input data-f="price" data-i="${i}" type="number" value="${it.price}" placeholder="Rs" min="0" style="width:88px;padding:9px 11px;border:1px solid var(--border);border-radius:3px;">
+      <input data-f="quantity" data-i="${i}" type="number" value="${it.quantity}" min="1" style="width:62px;padding:9px 11px;border:1px solid var(--border);border-radius:3px;">
+      <button type="button" data-x="${i}" style="width:26px;height:26px;border-radius:50%;background:var(--bg-alt);font-size:14px;border:none;cursor:pointer" aria-label="Remove item">×</button>
+    </div>`).join('') : '<div style="font-size:12.5px;color:var(--text-3);font-weight:300">No items yet.</div>';
+
+  box.querySelectorAll("input").forEach(inp => inp.oninput = () => {
+    const it = coItems[+inp.dataset.i];
+    if(!it) return;
+    if(inp.dataset.f === "name") it.name = inp.value;
+    else it[inp.dataset.f] = inp.value;
+    updCoTotal();
+  });
+  
+  box.querySelectorAll("[data-x]").forEach(b => b.onclick = () => {
+    coItems.splice(+b.dataset.x, 1);
+    renderCoItems();
+  });
+  updCoTotal();
+}
+
 window.saveCustomOrder = function() {
-  const name = $('coName').value;
-  const phone = $('coPhone').value;
-  const city = $('coCity').value;
-  const zone = $('coZone').value;
-  const address = $('coAddress').value;
-  const prodId = $('coProd').value;
-  const qty = parseInt($('coQty').value) || 1;
+  const err = document.getElementById("coErr");
+  const name = document.getElementById('coName').value.trim();
+  const phone = document.getElementById('coPhone').value.trim();
+  const address = document.getElementById('coAddress').value.trim();
+  const zone = document.getElementById('coZone').value;
+  const note = document.getElementById('coNote').value.trim();
+  const source = document.getElementById('coSource').value;
+  const status = document.getElementById('coStatus').value;
+  const pay = document.getElementById('coPay').value;
+
+  if(name.length < 2) { err.textContent = "Please enter customer name"; return; }
+  if(phone.length < 7) { err.textContent = "Please enter phone number"; return; }
+  if(coItems.length === 0) { err.textContent = "Add at least one item"; return; }
   
-  if(!name || !phone || !address) return toast('Fill all customer details');
-  
-  const p = PRODUCTS.find(x => x.id === prodId);
-  if(!p) return toast('Product not found');
-  
-  const item = {
-    id: p.id,
-    name: p.name,
-    price: p.price,
-    image: p.image,
-    quantity: qty
-  };
-  
+  const finalItems = coItems.map(i => ({
+    id: i.id,
+    name: i.name,
+    price: Number(i.price) || 0,
+    image: i.image || '',
+    quantity: Number(i.quantity) || 1
+  }));
+
+  const subtotal = finalItems.reduce((s,i) => s + (i.price * i.quantity), 0);
   const s = SM.getSettings();
-  const subtotal = p.price * qty;
   let deliveryFee = 0;
   if (subtotal < s.freeDeliveryThreshold) {
     deliveryFee = zone === 'Inside Kathmandu Valley' ? s.deliveryFeeInside : s.deliveryFeeOutside;
@@ -726,13 +817,15 @@ window.saveCustomOrder = function() {
   const order = {
     id: 'ORD' + Date.now().toString().slice(-6),
     date: Date.now(),
-    customer: { name, phone, zone, city, address, note: 'Custom Order' },
-    payment: { method: 'Cash on Delivery', status: 'pending' },
-    items: [item],
+    customer: { name, phone, zone, city: '', address, note: (source + ' Order' + (note ? ': ' + note : '')) },
+    payment: { method: pay, status: (pay==='Already Paid'?'paid':'pending') },
+    items: finalItems,
     subtotal: subtotal,
     deliveryFee: deliveryFee,
     total: subtotal + deliveryFee,
-    status: 'placed'
+    status: status,
+    manual: true,
+    source: source
   };
   
   let orders = SM.getOrders();
@@ -742,7 +835,7 @@ window.saveCustomOrder = function() {
   ORDERS = orders.sort((a,b) => b.date - a.date);
   closeModal();
   renderOrdersView();
-  toast('Custom order created');
+  toast('Order added');
 };
 
 // --- Settings ---

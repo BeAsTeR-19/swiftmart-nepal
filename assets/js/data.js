@@ -130,8 +130,15 @@ const initialProducts = [
   }
 ];
 
+const DATA_VERSION = 2;
+
 const SM = {
   init() {
+    const storedVersion = localStorage.getItem('sm_data_version');
+    if (!storedVersion || parseInt(storedVersion) < DATA_VERSION) {
+      localStorage.setItem(sm_keys.products, JSON.stringify(initialProducts));
+      localStorage.setItem('sm_data_version', DATA_VERSION.toString());
+    }
     if (!localStorage.getItem(sm_keys.settings)) this.saveSettings(defaultSettings);
     if (!localStorage.getItem(sm_keys.products)) this.saveProducts(initialProducts);
     if (!localStorage.getItem(sm_keys.cart)) localStorage.setItem(sm_keys.cart, JSON.stringify([]));
@@ -227,7 +234,7 @@ const SM = {
     const wishlisted = this.isWishlisted(p.id);
     return `<div class="product-card" data-id="${p.id}">
       <a href="product.html?id=${p.id}" class="pc-img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 fill=%22%23ccc%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f5f5f5%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'">
         ${p.badge ? `<span class="pc-badge badge-${p.badge.toLowerCase()}">${p.badge}</span>` : ''}
       </a>
       <button class="pc-wish ${wishlisted ? 'active' : ''}" onclick="event.stopPropagation();SM.toggleWishlist('${p.id}');location.reload();" aria-label="Wishlist">

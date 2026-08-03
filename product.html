@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product - SwiftMart Nepal</title>
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpeg">
 </head>
 <body>
 
@@ -18,7 +19,6 @@
     <div class="header-inner container">
       <a href="index.html" class="logo-link">
         <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
-        <span class="logo-text">SwiftMart</span>
       </a>
 
       <div class="search-wrap">
@@ -296,14 +296,7 @@
         SM.toast('Product is out of stock', 'error');
         return;
       }
-      let cart = SM.getCart();
-      const existing = cart.find(i => i.id === currentProduct.id);
-      if(existing) {
-        existing.qty += qty;
-      } else {
-        cart.push({ id: currentProduct.id, qty: qty });
-      }
-      localStorage.setItem('sm_cart', JSON.stringify(cart));
+      SM.addToCart(currentProduct.id, qty);
       window.location.href = 'checkout.html';
     }
   </script>

@@ -200,6 +200,7 @@
       accent-color: var(--primary);
     }
   </style>
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpeg">
 </head>
 <body>
 
@@ -208,7 +209,6 @@
     <div class="header-inner container">
       <a href="index.html" class="logo-link">
         <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
-        <span class="logo-text">SwiftMart</span>
       </a>
       <a href="cart.html" style="margin-left:auto; font-weight:600; color:var(--text-2); font-size:14px;">
         Back to Cart
@@ -416,11 +416,11 @@
       let html = '';
 
       cart.forEach(item => {
-        const p = products.find(prod => prod.id === item.id);
+        const p = products.find(prod => prod.id === item.productId);
         if(!p) return;
-        const lineTotal = p.price * item.qty;
+        const lineTotal = p.price * item.quantity;
         subtotalVal += lineTotal;
-        cartItems.push({ id: p.id, name: p.name, price: p.price, qty: item.qty });
+        cartItems.push({ id: p.id, name: p.name, price: p.price, qty: item.quantity });
         
         html += `
           <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px;">
@@ -430,7 +430,7 @@
               </div>
               <div style="padding-top:2px;">
                 <div style="font-weight:700; color:var(--text); display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${p.name}</div>
-                <div style="color:var(--text-3); font-size:12px; margin-top:2px;">Qty: ${item.qty}</div>
+                <div style="color:var(--text-3); font-size:12px; margin-top:2px;">Qty: ${item.quantity}</div>
               </div>
             </div>
             <div style="font-weight:700; color:var(--text); padding-top:2px;">${SM.formatPrice(lineTotal)}</div>

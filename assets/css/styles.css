@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 :root {
-  --primary: #4c61ff;
-  --primary-light: #6b7cff;
+  --primary: #001f5b;
+  --primary-light: #0a3175;
   --accent: #ff4c4c;
   --accent-hover: #e63939;
   --bg: #ffffff;
@@ -77,7 +77,7 @@ ul,ol{list-style:none}
 /* ===== HERO ===== */
 .hero{position:relative;overflow:hidden;background:var(--bg-alt)}
 .hero img{width:100%;height:auto;display:block;object-fit:cover;max-height:460px}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(26,39,68,.7) 0%,rgba(26,39,68,.3) 50%,transparent 100%);display:flex;align-items:center}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(0,31,91,.7) 0%,rgba(0,31,91,.3) 50%,transparent 100%);display:flex;align-items:center}
 .hero-content{padding:40px;max-width:520px}
 .hero-content h1{font-size:clamp(24px,4vw,40px);color:#fff;margin-bottom:12px;font-weight:800;line-height:1.15}
 .hero-content p{color:rgba(255,255,255,.9);font-size:clamp(14px,1.5vw,17px);margin-bottom:24px;line-height:1.6}
@@ -153,11 +153,11 @@ ul,ol{list-style:none}
 .form-group{margin-bottom:16px}
 .form-label{display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text)}
 .form-control{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:#fff;color:var(--text);font-size:14px;transition:border-color .15s,box-shadow .15s}
-.form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,39,68,.08)}
+.form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,31,91,.08)}
 textarea.form-control{min-height:80px;resize:vertical}
 .radio-group{display:flex;gap:12px;flex-wrap:wrap}
 .radio-opt{display:flex;align-items:center;gap:6px;padding:10px 16px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;transition:all .15s}
-.radio-opt:has(input:checked){border-color:var(--primary);background:rgba(26,39,68,.04)}
+.radio-opt:has(input:checked){border-color:var(--primary);background:rgba(0,31,91,.04)}
 .radio-opt input{accent-color:var(--primary)}
 
 /* ===== TOAST ===== */
@@ -265,7 +265,7 @@ textarea.form-control{min-height:80px;resize:vertical}
 table.admin-table{width:100%;border-collapse:collapse;font-size:14px}
 table.admin-table th{text-align:left;padding:10px 14px;background:var(--bg-alt);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.3px;color:var(--text-2);border-bottom:2px solid var(--border)}
 table.admin-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
-table.admin-table tr:hover td{background:rgba(26,39,68,.02)}
+table.admin-table tr:hover td{background:rgba(0,31,91,.02)}
 .status-badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600;text-transform:capitalize}
 .status-placed{background:#dbeafe;color:#1d4ed8}
 .status-confirmed{background:#fef3c7;color:#b45309}
