@@ -142,43 +142,53 @@ const initialProducts = [
 const DATA_VERSION = 3;
 
 const SM = {
+  _products: null,
+  _settings: null,
   async init() {
+    if (this._products && this._settings) return;
+    
     // Check if settings exists in Firestore, if not populate initial data
     const settingsSnap = await db.collection('settings').doc('store').get();
     if (!settingsSnap.exists) {
       await db.collection('settings').doc('store').set(defaultSettings);
+      this._settings = defaultSettings;
+    } else {
+      this._settings = settingsSnap.data();
     }
     
-    const prodSnap = await db.collection('products').limit(1).get();
+    const prodSnap = await db.collection('products').get();
     if (prodSnap.empty) {
+      const batch = db.batch();
       for (const p of initialProducts) {
-        await db.collection('products').doc(p.id).set(p);
+        batch.set(db.collection('products').doc(p.id), p);
       }
+      await batch.commit();
+      this._products = initialProducts;
+    } else {
+      this._products = prodSnap.docs.map(d => d.data());
     }
 
     if (!localStorage.getItem(sm_keys.cart)) localStorage.setItem(sm_keys.cart, JSON.stringify([]));
     if (!localStorage.getItem(sm_keys.wishlist)) localStorage.setItem(sm_keys.wishlist, JSON.stringify([]));
   },
-  async getSettings() { 
-    const doc = await db.collection('settings').doc('store').get();
-    return doc.exists ? doc.data() : defaultSettings;
+  getSettings() { 
+    return this._settings || defaultSettings;
   },
   async saveSettings(s) { 
     await db.collection('settings').doc('store').set(s);
+    this._settings = s;
   },
-  async getProducts() { 
-    const snap = await db.collection('products').get();
-    return snap.docs.map(d => d.data());
+  getProducts() { 
+    return this._products || initialProducts;
   },
   async saveProducts(productsArray) {
-    // only used by admin to re-save all products? Usually admin saves one by one
-    // But in the old logic we saved the whole array.
     const batch = db.batch();
     productsArray.forEach(p => {
       const ref = db.collection('products').doc(p.id);
       batch.set(ref, p);
     });
     await batch.commit();
+    this._products = productsArray;
   },
   async getProduct(id) { 
     const doc = await db.collection('products').doc(id).get();

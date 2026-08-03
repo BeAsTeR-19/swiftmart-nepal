@@ -250,6 +250,7 @@
     let qty = 1;
 
     document.addEventListener('DOMContentLoaded', async () => {
+      await SM.init();
       document.getElementById('year').textContent = new Date().getFullYear();
       updateCartCount();
 

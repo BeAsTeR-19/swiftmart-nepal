@@ -232,6 +232,7 @@
   <script src="assets/js/data.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
+      await SM.init();
       document.getElementById('year').textContent = new Date().getFullYear();
       
       const settings = await SM.getSettings();

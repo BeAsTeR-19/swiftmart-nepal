@@ -413,6 +413,7 @@
     let cartItems = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
+      await SM.init();
       const cart = SM.getCart();
       if(cart.length === 0) {
         window.location.href = 'cart.html';
