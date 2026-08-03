@@ -201,6 +201,13 @@
     }
   </style>
   <link rel="icon" type="image/jpeg" href="assets/images/logo.svg">
+
+  <meta property="og:title" content="SwiftMart Nepal - Quality Everyday Products">
+  <meta property="og:description" content="Shop genuinely useful everyday products with reliable quality and honest pricing. Delivering all over Nepal!">
+  <meta property="og:image" content="https://swiftmart-nepal.vercel.app/assets/images/hero.jpg">
+  <meta property="og:url" content="https://swiftmart-nepal.vercel.app">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
@@ -243,22 +250,37 @@
                 </div>
               </div>
 
-              <div class="pay-form-group">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="pay-form-group">
+                  <label>Province *</label>
+                  <select name="province" required onchange="updateZoneFromProvince(this.value)">
+                    <option value="">Select Province</option>
+                    <option value="Koshi">Koshi</option>
+                    <option value="Madhesh">Madhesh</option>
+                    <option value="Bagmati">Bagmati</option>
+                    <option value="Gandaki">Gandaki</option>
+                    <option value="Lumbini">Lumbini</option>
+                    <option value="Karnali">Karnali</option>
+                    <option value="Sudurpashchim">Sudurpashchim</option>
+                  </select>
+                </div>
+                <div class="pay-form-group">
+                  <label>City *</label>
+                  <input type="text" name="city" required placeholder="E.g., Kathmandu">
+                </div>
+              </div>
+              
+              <div class="pay-form-group" style="display:none;">
                 <label>Delivery Zone *</label>
-                <select name="zone" onchange="updateTotals()">
+                <select name="zone" id="zone-select" onchange="updateTotals()">
                   <option value="inside">Inside Kathmandu Valley</option>
                   <option value="outside">Outside Valley</option>
                 </select>
               </div>
 
               <div class="pay-form-group">
-                <label>City/Area *</label>
-                <input type="text" name="city" required placeholder="e.g. Baneshwor, Lalitpur">
-              </div>
-
-              <div class="pay-form-group">
-                <label>Full Address *</label>
-                <input type="text" name="address" required placeholder="Street name, nearby landmarks, house number">
+                <label>Street Address & Landmark *</label>
+                <textarea name="address" required placeholder="Street name, landmark, etc."></textarea>
               </div>
 
               <div class="pay-form-group" style="margin-bottom:0;">
@@ -480,6 +502,7 @@
             phone: data.phone,
             zone: data.zone,
             city: data.city,
+            province: data.province,
             address: data.address,
             note: data.note || ''
           },
@@ -502,7 +525,7 @@
     });
 
     function updateTotals() {
-      const settings = await SM.getSettings();
+      const settings = SM.getSettings();
       const zoneSelect = document.querySelector('select[name="zone"]');
       const isInside = zoneSelect ? zoneSelect.value === 'inside' : true;
       
@@ -517,6 +540,24 @@
       document.getElementById('co-delivery').textContent = deliveryVal === 0 ? 'Free' : SM.formatPrice(deliveryVal);
       document.getElementById('co-total').textContent = SM.formatPrice(totalVal);
     }
+    
+    function updateZoneFromProvince(prov) {
+      const cityInput = document.querySelector('input[name="city"]');
+      const zoneSelect = document.getElementById('zone-select');
+      const city = cityInput ? cityInput.value.toLowerCase() : '';
+      
+      if (prov === 'Bagmati' && (city.includes('kathmandu') || city.includes('lalitpur') || city.includes('bhaktapur') || city.includes('ktm'))) {
+        zoneSelect.value = 'inside';
+      } else {
+        zoneSelect.value = 'outside';
+      }
+      updateTotals();
+    }
+    
+    document.querySelector('input[name="city"]')?.addEventListener('input', () => {
+      const prov = document.querySelector('select[name="province"]').value;
+      updateZoneFromProvince(prov);
+    });
 
     function switchTab(tabId) {
       document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));

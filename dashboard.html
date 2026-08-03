@@ -3,9 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopping Cart - SwiftMart Nepal</title>
+  <title>My Dashboard - SwiftMart</title>
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="icon" type="image/jpeg" href="assets/images/logo.svg">
+  <style>
+    .dash-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 40px 0; min-height: 500px; }
+    @media(max-width: 768px) { .dash-layout { grid-template-columns: 1fr; } }
+    .dash-nav { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 0; }
+    .dash-nav a { display: block; padding: 12px 24px; color: var(--text-2); font-weight: 500; text-decoration: none; border-left: 3px solid transparent; }
+    .dash-nav a:hover { background: rgba(0,31,91,0.04); color: var(--primary); }
+    .dash-nav a.active { border-left-color: var(--primary); color: var(--primary); font-weight: 700; background: rgba(0,31,91,0.04); }
+    
+    .dash-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+    .dash-card h2 { font-size: 1.25rem; margin-bottom: 20px; color: var(--text); padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    
+    .order-item { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+    .order-status { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: capitalize; }
+    .st-placed { background: #e0f2fe; color: #0284c7; }
+    .st-confirmed { background: #fef9c3; color: #ca8a04; }
+    .st-shipped { background: #ffedd5; color: #ea580c; }
+    .st-delivered { background: #dcfce7; color: #16a34a; }
+    .st-cancelled { background: #fee2e2; color: #dc2626; }
+  </style>
 
   <meta property="og:title" content="SwiftMart Nepal - Quality Everyday Products">
   <meta property="og:description" content="Shop genuinely useful everyday products with reliable quality and honest pricing. Delivering all over Nepal!">
@@ -15,13 +34,7 @@
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-
-  <!-- ANNOUNCEMENT BAR -->
-  <div class="ann-bar" id="ann-bar">
-    Free delivery all over Nepal on orders over Rs 3,000!
-  </div>
-
-    <!-- HEADER -->
+  <!-- HEADER INJECTED DYNAMICALLY (Mock for script) -->
   <header class="header">
     <div class="header-inner container">
       <!-- LOGO -->
@@ -83,7 +96,7 @@
     </nav>
   </header>
 
-  <!-- MOBILE NAV -->
+<!-- MOBILE NAV -->
   <div class="mob-nav" id="mob-nav">
     <div class="mob-overlay" id="mob-overlay"></div>
     <div class="mob-panel">
@@ -106,73 +119,121 @@
         <a href="about.html">About Us</a>
       </div>
     </div>
+
+  <div class="container dash-layout">
+    <aside>
+      <div class="dash-nav">
+        <a href="#orders" class="active" id="nav-orders">My Orders</a>
+        <a href="#profile" id="nav-profile">Profile Settings</a>
+        <a href="#" id="btn-logout" style="color: var(--red);">Log Out</a>
+      </div>
+    </aside>
+    
+    <main>
+      <div id="tab-orders" class="dash-card">
+        <h2>My Recent Orders</h2>
+        <div id="orders-list">
+          <p>Loading orders...</p>
+        </div>
+      </div>
+      
+      <div id="tab-profile" class="dash-card" style="display:none;">
+        <h2>Profile Settings</h2>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="text" id="prof-email" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Display Name</label>
+          <input type="text" id="prof-name" class="form-control" disabled>
+        </div>
+        <p style="font-size:13px; color:var(--text-3); margin-top:12px;">Profile updates are coming soon.</p>
+      </div>
+    </main>
   </div>
 
-  <div class="container" style="padding: 32px 16px;">
-    <div class="breadcrumb">
-      <a href="index.html">Home</a> <span>/</span> <span id="bc-current">Cart</span>
-    </div>
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await SM.init();
 
-    <h1 style="margin-bottom: 24px;">Shopping Cart</h1>
+      const mobMenuBtn = document.getElementById('mob-menu-btn');
+      const mobCloseBtn = document.getElementById('mob-close-btn');
+      const mobNav = document.getElementById('mob-nav');
+      const mobOverlay = document.getElementById('mob-overlay');
+      if (mobMenuBtn) {
+        mobMenuBtn.addEventListener('click', () => mobNav.classList.add('open'));
+        mobCloseBtn.addEventListener('click', () => mobNav.classList.remove('open'));
+        mobOverlay.addEventListener('click', () => mobNav.classList.remove('open'));
+      }
 
-    <div class="cart-layout" id="cart-content">
-      <main id="cart-items-container">
-        <!-- Cart Items -->
-      </main>
-
-      <aside class="cart-summary">
-        <h3>Order Summary</h3>
-        <div class="cart-row mt-2">
-          <span>Subtotal</span>
-          <span id="summary-subtotal">Rs 0</span>
-        </div>
+      
+      firebase.auth().onAuthStateChanged(async user => {
+        if (!user) {
+          window.location.href = 'login.html';
+          return;
+        }
         
-        <div class="form-group mt-3">
-          <label class="form-label">Delivery Zone</label>
-          <div class="radio-group" style="flex-direction:column; gap:8px;">
-            <label class="radio-opt" style="width:100%;">
-              <input type="radio" name="zone" value="inside" checked onchange="renderCart()"> Inside Kathmandu Valley
-            </label>
-            <label class="radio-opt" style="width:100%;">
-              <input type="radio" name="zone" value="outside" onchange="renderCart()"> Outside Valley
-            </label>
-          </div>
-        </div>
-
-        <div class="cart-row">
-          <span>Delivery Fee</span>
-          <span id="summary-delivery">Rs 0</span>
-        </div>
+        document.getElementById('prof-email').value = user.email;
+        document.getElementById('prof-name').value = user.displayName || user.email.split('@')[0];
         
-        <p id="free-delivery-msg" style="font-size:12px; color:var(--success); margin-top:4px; display:none;">
-          Qualifies for Free Delivery inside valley!
-        </p>
-
-        <div class="cart-row total">
-          <span>Total</span>
-          <span id="summary-total">Rs 0</span>
-        </div>
-
-        <button class="btn btn-accent btn-block btn-lg mt-3" onclick="window.location.href='checkout.html'">
-          Proceed to Checkout
-        </button>
-        <div class="text-center mt-2">
-          <a href="shop.html" style="font-size:14px; font-weight:500; color:var(--primary); text-decoration:underline;">Continue Shopping</a>
-        </div>
-      </aside>
-    </div>
-
-    <div id="empty-cart" class="empty-state" style="display:none;">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-      <h3>Your cart is empty</h3>
-      <p>Looks like you haven't added anything yet.</p>
-      <a href="shop.html" class="btn btn-primary">Start Shopping</a>
-    </div>
-
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="footer">
+        // Fetch Orders for this user
+        const snap = await db.collection('orders').where('userId', '==', user.uid).orderBy('date', 'desc').get();
+        const orders = snap.docs.map(d => d.data());
+        
+        const list = document.getElementById('orders-list');
+        if (orders.length === 0) {
+          list.innerHTML = '<p style="color:var(--text-3);">You have no previous orders.</p><a href="shop.html" class="btn btn-primary" style="margin-top:16px;">Start Shopping</a>';
+        } else {
+          let html = '';
+          orders.forEach(o => {
+            const dateStr = new Date(o.date).toLocaleDateString();
+            const statusClass = 'st-' + (o.status || 'placed');
+            html += `
+              <div class="order-item">
+                <div>
+                  <div style="font-weight:700; font-size:15px; margin-bottom:4px;">${o.id}</div>
+                  <div style="font-size:13px; color:var(--text-3);">${dateStr} &bull; ${o.payment.method}</div>
+                </div>
+                <div>
+                  <div style="font-weight:700; font-size:16px; margin-bottom:4px; text-align:right;">${o.payment.method === 'COD' && o.status !== 'delivered' ? 'Pending: ' : ''}Rs. ${(o.items.reduce((s,i) => s + i.price * i.qty, 0)).toLocaleString('en-IN')}</div>
+                  <div style="text-align:right;"><span class="order-status ${statusClass}">${o.status || 'placed'}</span></div>
+                </div>
+              </div>
+            `;
+          });
+          list.innerHTML = html;
+        }
+      });
+      
+      document.getElementById('btn-logout').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await firebase.auth().signOut();
+      });
+      
+      document.getElementById('nav-orders').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('nav-orders').classList.add('active');
+        document.getElementById('nav-profile').classList.remove('active');
+        document.getElementById('tab-orders').style.display = 'block';
+        document.getElementById('tab-profile').style.display = 'none';
+      });
+      
+      document.getElementById('nav-profile').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('nav-profile').classList.add('active');
+        document.getElementById('nav-orders').classList.remove('active');
+        document.getElementById('tab-profile').style.display = 'block';
+        document.getElementById('tab-orders').style.display = 'none';
+      });
+    });
+  </script>
+<footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-col">
@@ -230,121 +291,13 @@
       </div>
       <div class="footer-bottom">
         <div>&copy; <span id="year"></span> SwiftMart Nepal. All rights reserved.</div>
+        <div class="pay-badges" style="opacity:0.7; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <img src="assets/images/cod.svg" style="height:24px; background:#fff; padding:2px; border-radius:4px;" alt="COD">
+            <img src="assets/images/esewa.png" style="height:24px; background:#fff; padding:2px; border-radius:4px;" alt="eSewa">
+            <img src="assets/images/bank.svg" style="height:24px; background:#fff; padding:2px; border-radius:4px;" alt="Bank">
+          </div>
       </div>
     </div>
   </footer>
-
-  <!-- SCRIPTS -->
-  
-  <!-- Firebase Compat SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="assets/js/firebase_init.js"></script>
-
-  <script src="assets/js/data.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      await SM.init();
-      document.getElementById('year').textContent = new Date().getFullYear();
-      
-      const settings = await SM.getSettings();
-      if(settings.announcement) document.getElementById('ann-bar').textContent = settings.announcement;
-
-      // Mobile menu
-      const mobMenuBtn = document.getElementById('mob-menu-btn');
-      const mobCloseBtn = document.getElementById('mob-close-btn');
-      const mobNav = document.getElementById('mob-nav');
-      mobMenuBtn.addEventListener('click', () => mobNav.classList.add('open'));
-      mobCloseBtn.addEventListener('click', () => mobNav.classList.remove('open'));
-
-      renderCart();
-    });
-
-    function renderCart() {
-      const cart = SM.getCart();
-      const products = await SM.getProducts();
-      updateCartCount();
-
-      const container = document.getElementById('cart-items-container');
-      const contentLayout = document.getElementById('cart-content');
-      const emptyState = document.getElementById('empty-cart');
-      
-      if (cart.length === 0) {
-        contentLayout.style.display = 'none';
-        emptyState.style.display = 'block';
-        return;
-      } else {
-        contentLayout.style.display = 'grid';
-        emptyState.style.display = 'none';
-      }
-
-      let subtotal = 0;
-      let html = '';
-
-      cart.forEach(item => {
-        const p = products.find(prod => prod.id === item.productId);
-        if(!p) return;
-        const itemTotal = p.price * item.quantity;
-        subtotal += itemTotal;
-
-        html += `
-          <div class="cart-item">
-            <img src="${p.image}" alt="${p.name}">
-            <div class="cart-item-info">
-              <a href="product.html?id=${p.id}" class="cart-item-name" style="color:var(--text);">${p.name}</a>
-              <div class="cart-item-price">${SM.formatPrice(p.price)}</div>
-            </div>
-            <div class="qty-ctrl">
-              <button onclick="updateQty('${p.id}', -1)">-</button>
-              <span>${item.quantity}</span>
-              <button onclick="updateQty('${p.id}', 1)">+</button>
-            </div>
-            <div style="font-weight:700; width:90px; text-align:right;">${SM.formatPrice(itemTotal)}</div>
-            <button class="cart-item-remove" onclick="removeCartItem('${p.id}')">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-
-      // Calculation
-      const settings = await SM.getSettings();
-      const isInside = document.querySelector('input[name="zone"]:checked').value === 'inside';
-      let deliveryFee = isInside ? settings.deliveryFeeInside : settings.deliveryFeeOutside;
-      const freeMsg = document.getElementById('free-delivery-msg');
-
-      if (subtotal >= settings.freeDeliveryThreshold) {
-        deliveryFee = 0;
-        freeMsg.style.display = 'block';
-      } else {
-        freeMsg.style.display = 'none';
-      }
-
-      document.getElementById('summary-subtotal').textContent = SM.formatPrice(subtotal);
-      document.getElementById('summary-delivery').textContent = deliveryFee === 0 ? 'Free' : SM.formatPrice(deliveryFee);
-      document.getElementById('summary-total').textContent = SM.formatPrice(subtotal + deliveryFee);
-    }
-
-    function updateQty(id, delta) {
-      let cart = SM.getCart();
-      const item = cart.find(i => i.productId === id);
-      if(item) {
-        const product = SM.getProducts().find(p => p.id === id);
-        let newQty = item.quantity + delta;
-        if(newQty < 1) newQty = 1;
-        if(product && newQty > product.stock) newQty = product.stock;
-        SM.updateCartQty(id, newQty);
-        renderCart();
-      }
-    }
-
-    function removeCartItem(id) {
-      SM.removeFromCart(id);
-      renderCart();
-    }
-  </script>
 </body>
 </html>

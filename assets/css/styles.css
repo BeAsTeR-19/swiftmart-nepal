@@ -299,8 +299,8 @@ table.admin-table tr:hover td{background:rgba(0,31,91,.02)}
 .review-text{font-size:14px;color:var(--text-2);line-height:1.6}
 
 /* ===== SHOP SIDEBAR ===== */
-.shop-layout{display:grid;grid-template-columns:1fr;gap:24px;padding:32px 0}
-.shop-sidebar{display:none}
+.shop-layout{display:flex;flex-direction:column;gap:32px;padding:32px 0}
+.shop-sidebar{display:block; margin-bottom: 16px;}
 .shop-sidebar h3{font-size:15px;margin-bottom:12px}
 .filter-group{margin-bottom:24px}
 .filter-group label{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:14px;cursor:pointer}
@@ -308,7 +308,7 @@ table.admin-table tr:hover td{background:rgba(0,31,91,.02)}
 .shop-sort{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
 .shop-sort select{padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px}
 .shop-count{font-size:14px;color:var(--text-2)}
-@media(min-width:768px){.shop-layout{grid-template-columns:220px 1fr}.shop-sidebar{display:block}}
+@media(min-width:768px){.shop-layout{display:grid;grid-template-columns:220px 1fr}.shop-sidebar{display:block}}
 
 /* ===== BREADCRUMB ===== */
 .breadcrumb{padding:12px 0;font-size:13px;color:var(--text-3)}

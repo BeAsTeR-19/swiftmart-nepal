@@ -240,7 +240,8 @@ const SM = {
   async createOrder(data) {
     const now = Date.now();
     const id = this.generateOrderId();
-    const o = { ...data, id, status: 'placed', date: now, statusHistory: [{ status: 'placed', timestamp: new Date(now).toISOString() }], timestamps: { placedAt: new Date(now).toISOString() } };
+    const user = firebase.auth().currentUser;
+    const o = { ...data, id, status: 'placed', date: now, userId: user ? user.uid : null, statusHistory: [{ status: 'placed', timestamp: new Date(now).toISOString() }], timestamps: { placedAt: new Date(now).toISOString() } };
     await db.collection('orders').doc(id).set(o);
     this.clearCart(); 
     return o;
@@ -281,10 +282,7 @@ const SM = {
   },
   formatPrice(n) {
     if (n == null) return '';
-    const s = Math.round(n).toString();
-    const last3 = s.substring(s.length - 3);
-    const rest = s.substring(0, s.length - 3);
-    return 'Rs ' + (rest ? rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3 : last3);
+    return 'Rs. ' + Number(n).toLocaleString('en-IN');
   },
   renderStars(rating) {
     let h = '';
@@ -344,13 +342,6 @@ firebase.auth().onAuthStateChanged(user => {
   const nameEl = document.getElementById('hdr-user-name');
   if (user && nameEl) {
     nameEl.textContent = user.displayName || user.email.split('@')[0];
-    document.getElementById('hdr-user').href = 'javascript:void(0);'; // For now, maybe an account page later
-    document.getElementById('hdr-user').onclick = async (e) => {
-      e.preventDefault();
-      if (confirm('Log out?')) {
-        await firebase.auth().signOut();
-        window.location.reload();
-      }
-    };
+    document.getElementById('hdr-user').href = 'dashboard.html';
   }
 });
