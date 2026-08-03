@@ -130,7 +130,7 @@ const initialProducts = [
   }
 ];
 
-const DATA_VERSION = 2;
+const DATA_VERSION = 3;
 
 const SM = {
   init() {
