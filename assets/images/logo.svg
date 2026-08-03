@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
   <!-- Motion lines -->
-  <path d="M48 200 H140 M24 256 H100 M72 312 H160" stroke="#3b82f6" stroke-width="32" stroke-linecap="round"/>
+  <path d="M48 200 H140 M24 256 H100 M72 312 H160" stroke="#ffffff" stroke-width="32" stroke-linecap="round"/>
   <!-- Speeding Box -->
-  <polygon points="200,120 460,120 380,392 120,392" fill="#2563eb" stroke="#ffffff" stroke-width="24" stroke-linejoin="round"/>
+  <polygon points="200,120 460,120 380,392 120,392" fill="#001f5b" stroke="#ffffff" stroke-width="24" stroke-linejoin="round"/>
   <!-- Flap to make it look like an open package/box -->
-  <polygon points="200,120 310,40 460,120" fill="#60a5fa" stroke="#ffffff" stroke-width="16" stroke-linejoin="round"/>
+  <polygon points="200,120 310,40 460,120" fill="#0a3175" stroke="#ffffff" stroke-width="16" stroke-linejoin="round"/>
 </svg>
