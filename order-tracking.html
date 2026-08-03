@@ -132,9 +132,16 @@
   </footer>
 
   <!-- SCRIPTS -->
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
   <script src="assets/js/data.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       updateCartCount();
 
@@ -163,7 +170,7 @@
     });
 
     function lookupOrder(id) {
-      const orders = SM.getOrders();
+      const orders = await SM.getOrders();
       const order = orders.find(o => o.id === id);
       const container = document.getElementById('result-container');
 

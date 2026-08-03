@@ -267,12 +267,19 @@
   </a>
 
   <!-- SCRIPTS -->
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
   <script src="assets/js/data.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       
-      const settings = SM.getSettings();
+      const settings = await SM.getSettings();
       if(settings.announcement) {
         document.getElementById('ann-bar').textContent = settings.announcement;
       }

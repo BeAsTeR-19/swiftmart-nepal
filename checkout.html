@@ -397,6 +397,13 @@
   </div>
 
   <!-- SCRIPTS -->
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
   <script src="assets/js/data.js"></script>
   <script>
     let subtotalVal = 0;
@@ -404,14 +411,14 @@
     let totalVal = 0;
     let cartItems = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const cart = SM.getCart();
       if(cart.length === 0) {
         window.location.href = 'cart.html';
         return;
       }
 
-      const products = SM.getProducts();
+      const products = await SM.getProducts();
       const itemsContainer = document.getElementById('checkout-items');
       let html = '';
 
@@ -493,7 +500,7 @@
     });
 
     function updateTotals() {
-      const settings = SM.getSettings();
+      const settings = await SM.getSettings();
       const zoneSelect = document.querySelector('select[name="zone"]');
       const isInside = zoneSelect ? zoneSelect.value === 'inside' : true;
       

@@ -296,7 +296,14 @@ h2{font-family:var(--disp);font-weight:400;font-size:clamp(24px,3vw,34px)}
 <div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
 <div class="toast" id="toast"></div>
 
-<script src="assets/js/data.js"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
+  <script src="assets/js/data.js"></script>
 <script>
 // --- UI Helpers ---
 const $ = id => document.getElementById(id);
@@ -371,8 +378,8 @@ const FLOW = ['placed', 'confirmed', 'dispatched', 'delivered'];
 const FLOW_LABEL = { placed: 'Placed', confirmed: 'Confirmed', dispatched: 'Dispatched', delivered: 'Delivered', cancelled: 'Cancelled' };
 
 function initApp() {
-  ORDERS = SM.getOrders().sort((a,b) => b.date - a.date);
-  PRODUCTS = SM.getProducts();
+  ORDERS = (await SM.getOrders()).sort((a,b) => b.date - a.date);
+  PRODUCTS = await SM.getProducts();
   EXPENSES = JSON.parse(localStorage.getItem('sm_costs') || '[]').sort((a,b) => b.date - a.date);
   
   renderOrdersView();
@@ -453,12 +460,12 @@ window.openOrder = function(id) {
   `);
 };
 
-window.setStatus = function(id, st) {
-  let orders = SM.getOrders();
+window.setStatus = async function(id, st) {
+  let orders = await SM.getOrders();
   let o = orders.find(x => x.id === id);
   if (o) {
-    o.status = st;
-    localStorage.setItem('sm_orders', JSON.stringify(orders));
+    await SM.updateOrderStatus(id, st);
+    // removed localStorage set
     ORDERS = orders.sort((a,b) => b.date - a.date);
     toast('Order updated');
     closeModal();
@@ -467,10 +474,10 @@ window.setStatus = function(id, st) {
   }
 };
 
-window.deleteOrder = function(id) {
+window.deleteOrder = async function(id) {
   if (confirm('Delete order?')) {
-    let orders = SM.getOrders().filter(x => x.id !== id);
-    localStorage.setItem('sm_orders', JSON.stringify(orders));
+    await SM.deleteOrder(id);
+    // removed localStorage set
     ORDERS = orders.sort((a,b) => b.date - a.date);
     toast('Order deleted');
     closeModal();
@@ -533,7 +540,7 @@ function renderProducts() {
   `).join('');
 }
 
-$('addProduct').onclick = () => editProduct(null);
+$('addProduct').onclick = async () => editProduct(null);
 window.editProduct = function(id) {
   const p = id ? PRODUCTS.find(x => x.id === id) : null;
   openModal(`
@@ -650,12 +657,12 @@ function renderFinances() {
   `).join('');
 }
 
-$('feAdd').onclick = () => {
+$('feAdd').onclick = async () => {
   const amt = parseInt($('feAmt').value);
   const d = $('feDate').value;
   if (!amt || !d) return toast('Fill required fields');
   
-  EXPENSES.push({
+  await SM.addCost({
     id: Date.now(),
     date: new Date(d).getTime(),
     amount: amt,
@@ -663,7 +670,7 @@ $('feAdd').onclick = () => {
     note: $('feDesc').value
   });
   
-  localStorage.setItem('sm_costs', JSON.stringify(EXPENSES));
+  // use SM.addCost instead
   $('feAmt').value = ''; $('feDesc').value = '';
   EXPENSES.sort((a,b) => b.date - a.date);
   renderFinances();
@@ -842,7 +849,7 @@ window.saveCustomOrder = function() {
     source: source
   };
   
-  let orders = SM.getOrders();
+  let orders = await SM.getOrders();
   orders.push(order);
   localStorage.setItem('sm_orders', JSON.stringify(orders));
   
@@ -862,7 +869,7 @@ function renderSettings() {
   $('set-pin').value = s.adminPin;
 }
 
-$('saveSettings').onclick = () => {
+$('saveSettings').onclick = async () => {
   const s = SM.getSettings();
   s.announcement = $('set-ann').value;
   s.deliveryFeeInside = parseInt($('set-fee-in').value);
@@ -870,7 +877,7 @@ $('saveSettings').onclick = () => {
   s.freeDeliveryThreshold = parseInt($('set-free').value);
   s.adminPin = $('set-pin').value;
   
-  localStorage.setItem('sm_settings', JSON.stringify(s));
+  await SM.saveSettings(s);
   toast('Settings saved');
 };
 </script>

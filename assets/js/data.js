@@ -142,27 +142,57 @@ const initialProducts = [
 const DATA_VERSION = 3;
 
 const SM = {
-  init() {
-    const storedVersion = localStorage.getItem('sm_data_version');
-    if (!storedVersion || parseInt(storedVersion) < DATA_VERSION) {
-      localStorage.setItem(sm_keys.products, JSON.stringify(initialProducts));
-      localStorage.setItem('sm_data_version', DATA_VERSION.toString());
+  async init() {
+    // Check if settings exists in Firestore, if not populate initial data
+    const settingsSnap = await db.collection('settings').doc('store').get();
+    if (!settingsSnap.exists) {
+      await db.collection('settings').doc('store').set(defaultSettings);
     }
-    if (!localStorage.getItem(sm_keys.settings)) this.saveSettings(defaultSettings);
-    if (!localStorage.getItem(sm_keys.products)) this.saveProducts(initialProducts);
+    
+    const prodSnap = await db.collection('products').limit(1).get();
+    if (prodSnap.empty) {
+      for (const p of initialProducts) {
+        await db.collection('products').doc(p.id).set(p);
+      }
+    }
+
     if (!localStorage.getItem(sm_keys.cart)) localStorage.setItem(sm_keys.cart, JSON.stringify([]));
     if (!localStorage.getItem(sm_keys.wishlist)) localStorage.setItem(sm_keys.wishlist, JSON.stringify([]));
-    if (!localStorage.getItem(sm_keys.orders)) localStorage.setItem(sm_keys.orders, JSON.stringify([]));
-    if (!localStorage.getItem(sm_keys.costs)) localStorage.setItem(sm_keys.costs, JSON.stringify([]));
   },
-  getSettings() { return JSON.parse(localStorage.getItem(sm_keys.settings)) || defaultSettings; },
-  saveSettings(s) { localStorage.setItem(sm_keys.settings, JSON.stringify(s)); },
-  getProducts() { return JSON.parse(localStorage.getItem(sm_keys.products)) || []; },
-  saveProducts(p) { localStorage.setItem(sm_keys.products, JSON.stringify(p)); },
-  getProduct(id) { return this.getProducts().find(p => p.id === id); },
-  addProduct(p) { const ps = this.getProducts(); ps.push(p); this.saveProducts(ps); },
-  updateProduct(id, u) { const ps = this.getProducts(); const i = ps.findIndex(p => p.id === id); if (i !== -1) { ps[i] = { ...ps[i], ...u }; this.saveProducts(ps); } },
-  deleteProduct(id) { this.saveProducts(this.getProducts().filter(p => p.id !== id)); },
+  async getSettings() { 
+    const doc = await db.collection('settings').doc('store').get();
+    return doc.exists ? doc.data() : defaultSettings;
+  },
+  async saveSettings(s) { 
+    await db.collection('settings').doc('store').set(s);
+  },
+  async getProducts() { 
+    const snap = await db.collection('products').get();
+    return snap.docs.map(d => d.data());
+  },
+  async saveProducts(productsArray) {
+    // only used by admin to re-save all products? Usually admin saves one by one
+    // But in the old logic we saved the whole array.
+    const batch = db.batch();
+    productsArray.forEach(p => {
+      const ref = db.collection('products').doc(p.id);
+      batch.set(ref, p);
+    });
+    await batch.commit();
+  },
+  async getProduct(id) { 
+    const doc = await db.collection('products').doc(id).get();
+    return doc.exists ? doc.data() : null;
+  },
+  async addProduct(p) { 
+    await db.collection('products').doc(p.id).set(p);
+  },
+  async updateProduct(id, u) { 
+    await db.collection('products').doc(id).update(u);
+  },
+  async deleteProduct(id) { 
+    await db.collection('products').doc(id).delete();
+  },
   getCart() { return JSON.parse(localStorage.getItem(sm_keys.cart)) || []; },
   addToCart(pid, qty = 1) {
     const c = this.getCart(); const e = c.find(i => i.productId === pid);
@@ -177,11 +207,14 @@ const SM = {
   removeFromCart(pid) { localStorage.setItem(sm_keys.cart, JSON.stringify(this.getCart().filter(i => i.productId !== pid))); },
   clearCart() { localStorage.setItem(sm_keys.cart, JSON.stringify([])); },
   getCartCount() { return this.getCart().reduce((t, i) => t + i.quantity, 0); },
-  getCartTotal() {
-    return this.getCart().reduce((t, i) => {
-      const p = this.getProduct(i.productId);
-      return t + (p ? p.price * i.quantity : 0);
-    }, 0);
+  async getCartTotal() {
+    const cart = this.getCart();
+    let total = 0;
+    for (const i of cart) {
+      const p = await this.getProduct(i.productId);
+      if (p) total += p.price * i.quantity;
+    }
+    return total;
   },
   getWishlist() { return JSON.parse(localStorage.getItem(sm_keys.wishlist)) || []; },
   toggleWishlist(pid) {
@@ -190,34 +223,47 @@ const SM = {
     localStorage.setItem(sm_keys.wishlist, JSON.stringify(w));
   },
   isWishlisted(pid) { return this.getWishlist().includes(pid); },
-  getOrders() { 
-    const os = JSON.parse(localStorage.getItem(sm_keys.orders)) || [];
-    return os.map(o => {
-      if (!o.date) o.date = o.timestamps && o.timestamps.placedAt ? new Date(o.timestamps.placedAt).getTime() : Date.now();
-      return o;
-    });
+  async getOrders() { 
+    const snap = await db.collection('orders').get();
+    return snap.docs.map(d => d.data());
   },
-  createOrder(data) {
-    const os = this.getOrders();
+  async createOrder(data) {
     const now = Date.now();
-    const o = { ...data, id: this.generateOrderId(), status: 'placed', date: now, statusHistory: [{ status: 'placed', timestamp: new Date(now).toISOString() }], timestamps: { placedAt: new Date(now).toISOString() } };
-    os.push(o); localStorage.setItem(sm_keys.orders, JSON.stringify(os)); this.clearCart(); return o;
+    const id = this.generateOrderId();
+    const o = { ...data, id, status: 'placed', date: now, statusHistory: [{ status: 'placed', timestamp: new Date(now).toISOString() }], timestamps: { placedAt: new Date(now).toISOString() } };
+    await db.collection('orders').doc(id).set(o);
+    this.clearCart(); 
+    return o;
   },
-  updateOrderStatus(oid, status) {
-    const os = this.getOrders(); const o = os.find(x => x.id === oid);
-    if (o) {
+  async updateOrderStatus(oid, status) {
+    const oSnap = await db.collection('orders').doc(oid).get();
+    if (oSnap.exists) {
+      const o = oSnap.data();
       o.status = status; o.statusHistory.push({ status, timestamp: new Date().toISOString() });
       if (status === 'confirmed') o.timestamps.confirmedAt = new Date().toISOString();
       if (status === 'dispatched') o.timestamps.dispatchedAt = new Date().toISOString();
       if (status === 'delivered') o.timestamps.deliveredAt = new Date().toISOString();
-      localStorage.setItem(sm_keys.orders, JSON.stringify(os));
+      await db.collection('orders').doc(oid).set(o);
     }
   },
-  deleteOrder(oid) { localStorage.setItem(sm_keys.orders, JSON.stringify(this.getOrders().filter(o => o.id !== oid))); },
-  getOrder(oid) { return this.getOrders().find(o => o.id === oid); },
-  getCosts() { return JSON.parse(localStorage.getItem(sm_keys.costs)) || []; },
-  addCost(c) { const cs = this.getCosts(); cs.push({ ...c, id: 'C-' + Date.now() }); localStorage.setItem(sm_keys.costs, JSON.stringify(cs)); },
-  deleteCost(id) { localStorage.setItem(sm_keys.costs, JSON.stringify(this.getCosts().filter(c => c.id !== id))); },
+  async deleteOrder(oid) { 
+    await db.collection('orders').doc(oid).delete();
+  },
+  async getOrder(oid) { 
+    const doc = await db.collection('orders').doc(oid).get();
+    return doc.exists ? doc.data() : null;
+  },
+  async getCosts() { 
+    const snap = await db.collection('costs').get();
+    return snap.docs.map(d => d.data());
+  },
+  async addCost(c) { 
+    const id = 'C-' + Date.now();
+    await db.collection('costs').doc(id).set({ ...c, id });
+  },
+  async deleteCost(id) { 
+    await db.collection('costs').doc(id).delete();
+  },
   generateOrderId() {
     const ch = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let r = '';
     for (let i = 0; i < 5; i++) r += ch.charAt(Math.floor(Math.random() * ch.length));
@@ -264,7 +310,8 @@ const SM = {
   }
 };
 window.SM = SM;
-SM.init();
+setTimeout(() => { SM.init(); }, 100);
+
 
 /* Toast */
 function showToast(msg, type = 'success') {

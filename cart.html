@@ -185,12 +185,19 @@
   </footer>
 
   <!-- SCRIPTS -->
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
   <script src="assets/js/data.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       
-      const settings = SM.getSettings();
+      const settings = await SM.getSettings();
       if(settings.announcement) document.getElementById('ann-bar').textContent = settings.announcement;
 
       // Mobile menu
@@ -205,7 +212,7 @@
 
     function renderCart() {
       const cart = SM.getCart();
-      const products = SM.getProducts();
+      const products = await SM.getProducts();
       updateCartCount();
 
       const container = document.getElementById('cart-items-container');
@@ -253,7 +260,7 @@
       container.innerHTML = html;
 
       // Calculation
-      const settings = SM.getSettings();
+      const settings = await SM.getSettings();
       const isInside = document.querySelector('input[name="zone"]:checked').value === 'inside';
       let deliveryFee = isInside ? settings.deliveryFeeInside : settings.deliveryFeeOutside;
       const freeMsg = document.getElementById('free-delivery-msg');

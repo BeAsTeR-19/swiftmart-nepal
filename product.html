@@ -200,12 +200,19 @@
   </a>
 
   <!-- SCRIPTS -->
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="assets/js/firebase_init.js"></script>
+
   <script src="assets/js/data.js"></script>
   <script>
     let currentProduct = null;
     let qty = 1;
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       updateCartCount();
 
@@ -216,12 +223,12 @@
       mobMenuBtn.addEventListener('click', () => mobNav.classList.add('open'));
       mobCloseBtn.addEventListener('click', () => mobNav.classList.remove('open'));
 
-      const settings = SM.getSettings();
+      const settings = await SM.getSettings();
       if(settings.announcement) document.getElementById('ann-bar').textContent = settings.announcement;
 
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-      const products = SM.getProducts();
+      const products = await SM.getProducts();
       currentProduct = products.find(p => p.id === id);
 
       if (currentProduct) {
