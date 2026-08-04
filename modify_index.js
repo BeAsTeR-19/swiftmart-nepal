@@ -15,7 +15,7 @@ if (heroStart !== -1) {
 
   const newHeroButtons = `<div class="flex" style="gap:16px; flex-wrap:wrap; margin-top: 16px;">
           <a href="shop.html" class="btn btn-primary btn-lg" style="border-radius: 100px; box-shadow: 0 8px 20px rgba(76, 97, 255, 0.4); padding: 14px 36px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 24px rgba(76, 97, 255, 0.5)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 8px 20px rgba(76, 97, 255, 0.4)';">Browse the Store</a>
-          <a href="https://wa.me/9779769753746" target="_blank" class="btn btn-lg" style="border-radius: 100px; background: rgba(255,255,255,0.15); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); backdrop-filter: blur(8px); padding: 14px 36px; display: inline-flex; align-items: center; gap: 10px; transition: background 0.2s, transform 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='none';">
+          <a href="https://wa.me/9779802483843" target="_blank" class="btn btn-lg" style="border-radius: 100px; background: rgba(255,255,255,0.15); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); backdrop-filter: blur(8px); padding: 14px 36px; display: inline-flex; align-items: center; gap: 10px; transition: background 0.2s, transform 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='none';">
             \${svg}
             WhatsApp Us
           </a>
@@ -37,7 +37,7 @@ if (match) {
         \${whatsappSvg}
         <h2 style="color: #fff; font-size: clamp(28px, 4vw, 36px); margin-bottom: 16px; font-weight: 800; line-height: 1.2;">Need Help Choosing?</h2>
         <p style="font-size: 17px; color: rgba(255,255,255,0.95); margin-bottom: 36px; max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.6;">Message us directly on WhatsApp. Our team is ready to help you find the perfect products for your home.</p>
-        <a href="https://wa.me/9779769753746" target="_blank" class="btn btn-lg" style="background: #fff; color: #128C7E; border-radius: 100px; font-weight: 700; padding: 16px 40px; font-size: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)';">
+        <a href="https://wa.me/9779802483843" target="_blank" class="btn btn-lg" style="background: #fff; color: #128C7E; border-radius: 100px; font-weight: 700; padding: 16px 40px; font-size: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)';">
           Chat with Us Now
         </a>
       </div>

@@ -53,7 +53,7 @@ async function handleAuth(e) {
     }
     // Set explicit login flag
     localStorage.setItem('sm_auth_method', 'firebase');
-    window.location.href = 'index.html';
+    window.location.href = '/';
   } catch (error) {
     showError(error.message);
   } finally {
@@ -68,7 +68,7 @@ async function signInWithGoogle() {
   try {
     await firebase.auth().signInWithPopup(provider);
     localStorage.setItem('sm_auth_method', 'firebase');
-    window.location.href = 'index.html';
+    window.location.href = '/';
   } catch (error) {
     if (error.code !== 'auth/popup-closed-by-user') {
       showError(error.message);
@@ -79,6 +79,6 @@ async function signInWithGoogle() {
 // Redirect if already logged in
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    window.location.href = 'index.html';
+    window.location.href = '/';
   }
 });

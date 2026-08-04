@@ -11,7 +11,7 @@ const defaultSettings = {
   storeName: 'SwiftMart Nepal',
   email: 'contact@swiftmartnepal.com',
   phone: '+977 976-9753746',
-  whatsapp: '9779769753746',
+  whatsapp: '9779802483843',
   facebook: 'https://www.facebook.com/profile.php?id=61592544157695',
   announcement: 'Free delivery all over Nepal on orders over Rs 3,000!',
   deliveryFeeValley: 100,
@@ -223,8 +223,8 @@ const SM = {
         <div class="drawer-body" id="drawer-items"></div>
         <div class="drawer-footer">
           <div class="drawer-total"><span>Total</span><span id="drawer-total-price">Rs 0</span></div>
-          <a href="checkout.html" class="btn btn-accent btn-block" style="text-align:center;">Checkout</a>
-          <a href="cart.html" class="btn btn-outline btn-block mt-2" style="text-align:center;">View Full Cart</a>
+          <a href="/checkout" class="btn btn-accent btn-block" style="text-align:center;">Checkout</a>
+          <a href="/cart" class="btn btn-outline btn-block mt-2" style="text-align:center;">View Full Cart</a>
         </div>
       </div>
     `;
@@ -234,7 +234,7 @@ const SM = {
     const cartIcons = document.querySelectorAll(".hdr-cart");
     cartIcons.forEach(icon => {
       icon.addEventListener("click", (e) => {
-        if (window.location.pathname.includes("cart.html") || window.location.pathname.includes("checkout.html")) return;
+        if (window.location.pathname.includes("/cart") || window.location.pathname.includes("/checkout")) return;
         e.preventDefault();
         SM.openDrawer();
       });
@@ -306,7 +306,7 @@ const SM = {
     if (e) e.quantity += qty; else c.push({ productId: pid, quantity: qty });
     localStorage.setItem(sm_keys.cart, JSON.stringify(c));
     if (typeof updateCartCount !== 'undefined') updateCartCount();
-    if (typeof window !== 'undefined' && !window.location.pathname.includes('cart.html') && !window.location.pathname.includes('checkout.html')) { this.openDrawer(); }
+    if (typeof window !== 'undefined' && !window.location.pathname.includes('/cart') && !window.location.pathname.includes('/checkout')) { this.openDrawer(); }
   },
   updateCartQty(pid, qty) {
     if (qty <= 0) { this.removeFromCart(pid); return; }
@@ -395,7 +395,7 @@ const SM = {
   productCard(p) {
     const wishlisted = this.isWishlisted(p.id);
     return `<div class="product-card" data-id="${p.id}">
-      <a href="product.html?id=${p.id}" class="pc-img-wrap">
+      <a href="/product?id=${p.id}" class="pc-img-wrap">
         <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 fill=%22%23ccc%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f5f5f5%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'">
         ${p.badge ? `<span class="pc-badge badge-${p.badge.toLowerCase()}">${p.badge}</span>` : ''}
       </a>
@@ -403,7 +403,7 @@ const SM = {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="${wishlisted ? '#c65d1a' : 'none'}" stroke="${wishlisted ? '#c65d1a' : '#999'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
       <div class="pc-body">
-        <a href="product.html?id=${p.id}" class="pc-name">${p.name}</a>
+        <a href="/product?id=${p.id}" class="pc-name">${p.name}</a>
         <div class="pc-stars">${this.renderStars(p.rating)} <span class="pc-rev-count">(${p.reviewCount})</span></div>
         <div class="pc-price-row">
           <span class="pc-price">${this.formatPrice(p.price)}</span>
@@ -441,6 +441,6 @@ firebase.auth().onAuthStateChanged(user => {
   const nameEl = document.getElementById('hdr-user-name');
   if (user && nameEl) {
     nameEl.textContent = user.displayName || user.email.split('@')[0];
-    document.getElementById('hdr-user').href = 'dashboard.html';
+    document.getElementById('hdr-user').href = '/dashboard';
   }
 });

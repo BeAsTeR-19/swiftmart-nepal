@@ -38,7 +38,7 @@ ul,ol{list-style:none}
 @media(min-width:768px){.container{padding:0 24px}}
 
 /* ===== ANNOUNCEMENT BAR ===== */
-.ann-bar{background:var(--primary);color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:500;letter-spacing:.2px}
+.ann-bar{background:#001233;color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:500;letter-spacing:.2px}
 .ann-bar a{color:#fff;text-decoration:underline}
 
 /* ===== HEADER ===== */
@@ -84,9 +84,8 @@ ul,ol{list-style:none}
 .mob-panel a{display:block;padding:12px 0;font-size:15px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border)}
 
 /* ===== HERO ===== */
-.hero{position:relative;overflow:hidden;background:var(--bg-alt)}
-.hero img{width:100%;height:auto;display:block;object-fit:cover;max-height:460px}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(0,31,91,.7) 0%,rgba(0,31,91,.3) 50%,transparent 100%);display:flex;align-items:center}
+.hero{position:relative;overflow:hidden;background:radial-gradient(1100px 500px at 15% -20%,var(--primary-light) 0%,var(--primary) 60%);display:flex;align-items:center;min-height:400px}
+.hero-overlay{position:relative;inset:auto;background:none;width:100%;display:flex;align-items:center}
 .hero-content{padding:40px;max-width:520px}
 .hero-content h1{font-size:clamp(24px,4vw,40px);color:#fff;margin-bottom:12px;font-weight:800;line-height:1.15}
 .hero-content p{color:rgba(255,255,255,.9);font-size:clamp(14px,1.5vw,17px);margin-bottom:24px;line-height:1.6}
