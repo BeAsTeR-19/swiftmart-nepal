@@ -9,6 +9,8 @@ function setMode(newMode) {
   const subtitle = document.getElementById('form-subtitle');
   const nameGroup = document.getElementById('name-group');
   const confirmPasswordGroup = document.getElementById('confirm-password-group');
+  const termsGroup = document.getElementById('terms-group');
+  const loginExtras = document.getElementById('login-extras');
   const submitBtn = document.getElementById('submit-btn');
 
   if (mode === 'login') {
@@ -16,17 +18,25 @@ function setMode(newMode) {
     subtitle.textContent = 'Sign in to your SwiftMart account';
     nameGroup.style.display = 'none';
     confirmPasswordGroup.style.display = 'none';
+    if(termsGroup) termsGroup.style.display = 'none';
+    if(loginExtras) loginExtras.style.display = 'flex';
     document.getElementById('auth-name').removeAttribute('required');
     document.getElementById('auth-confirm-password').removeAttribute('required');
+    document.getElementById('password-reqs').style.display = 'none';
     submitBtn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:8px; vertical-align:middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Sign In';
   } else {
     title.textContent = 'Create Account';
     subtitle.textContent = 'Join SwiftMart today';
     nameGroup.style.display = 'block';
     confirmPasswordGroup.style.display = 'block';
+    if(termsGroup) termsGroup.style.display = 'block';
+    if(loginExtras) loginExtras.style.display = 'none';
     document.getElementById('auth-name').setAttribute('required', 'true');
     document.getElementById('auth-confirm-password').setAttribute('required', 'true');
     submitBtn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:8px; vertical-align:middle;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>Register';
+    
+    // trigger input event to show reqs if there's already text
+    document.getElementById('auth-password').dispatchEvent(new Event('input'));
   }
   
   showError('');
@@ -37,6 +47,34 @@ function showError(msg) {
   errDiv.textContent = msg;
   errDiv.style.display = msg ? 'block' : 'none';
 }
+
+// Password Validation Real-time UI
+document.addEventListener('DOMContentLoaded', () => {
+  const pw = document.getElementById('auth-password');
+  if(pw) {
+    pw.addEventListener('input', () => {
+      if (mode !== 'register') return;
+      
+      const v = pw.value;
+      const reqs = document.getElementById('password-reqs');
+      if (v.length > 0) reqs.style.display = 'block';
+      else reqs.style.display = 'none';
+
+      const check = (id, valid) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.style.color = valid ? 'var(--success, #27ae60)' : 'var(--text-3)';
+        el.innerHTML = (valid ? '✓ ' : '✗ ') + el.innerHTML.substring(2);
+      };
+
+      check('req-length', v.length >= 8 && v.length <= 64);
+      check('req-upper', /[A-Z]/.test(v));
+      check('req-lower', /[a-z]/.test(v));
+      check('req-num', /[0-9]/.test(v));
+      check('req-spec', /[^A-Za-z0-9]/.test(v));
+    });
+  }
+});
 
 async function handleAuth(e) {
   e.preventDefault();
@@ -50,9 +88,14 @@ async function handleAuth(e) {
       return showError('Passwords do not match.');
     }
     
+    const terms = document.getElementById('auth-terms');
+    if (terms && !terms.checked) {
+      return showError('You must agree to the Terms and Conditions.');
+    }
+
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,64}$/;
     if (!passwordRegex.test(password)) {
-      return showError('Password must be 8-64 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.');
+      return showError('Password must meet all the requirements listed.');
     }
   }
 

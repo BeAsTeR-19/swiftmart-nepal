@@ -225,6 +225,18 @@
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
+            
+            <div id="password-reqs" style="display:none; font-size:12px; color:var(--text-3); margin-bottom:8px; background:var(--bg-2); padding:10px; border-radius:6px; border:1px solid var(--border);">
+              <div style="margin-bottom:6px; font-weight:600; color:var(--text);">Password Requirements:</div>
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <div class="req-item" id="req-length" style="transition: color 0.2s;">✗ 8-64 characters</div>
+                <div class="req-item" id="req-upper" style="transition: color 0.2s;">✗ One uppercase letter</div>
+                <div class="req-item" id="req-lower" style="transition: color 0.2s;">✗ One lowercase letter</div>
+                <div class="req-item" id="req-num" style="transition: color 0.2s;">✗ One number</div>
+                <div class="req-item" id="req-spec" style="transition: color 0.2s;">✗ One special character</div>
+              </div>
+            </div>
+
             <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
           </div>
           <div class="form-group" id="confirm-password-group" style="display:none;">
@@ -235,6 +247,13 @@
           <div class="form-extras" id="login-extras">
             <label><input type="checkbox" checked id="remember-me"> Remember me</label>
             <button type="button" class="forgot-link" onclick="alert('Forgot password will be sent to your email!')">Forgot password?</button>
+          </div>
+
+          <div class="form-group" id="terms-group" style="display:none; margin-top:12px;">
+            <label style="font-size:13px; display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+              <input type="checkbox" id="auth-terms" style="margin-top:2px;">
+              <span style="color:var(--text-2);">I agree to the <a href="terms.html" style="color:var(--primary); text-decoration:underline;">Terms and Conditions</a> and <a href="privacy.html" style="color:var(--primary); text-decoration:underline;">Privacy Policy</a>.</span>
+            </label>
           </div>
 
           <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn" style="margin-top: 10px;">
