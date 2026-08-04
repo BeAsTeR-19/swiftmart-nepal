@@ -190,7 +190,8 @@ const SM = {
     this._settings = s;
   },
   getProducts() { 
-    return this._products || initialProducts;
+    const list = this._products || initialProducts;
+    return list.slice().sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
   },
   async saveProducts(productsArray) {
     const batch = db.batch();
