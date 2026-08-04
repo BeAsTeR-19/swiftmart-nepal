@@ -123,9 +123,19 @@
 
     <div class="pd-layout">
       <!-- IMAGE GALLERY -->
-      <div class="pd-gallery">
-        <img id="pd-image" src="" alt="Product Image">
+      <div class="pd-gallery" style="position:relative; display:flex; flex-direction:column; overflow:hidden;">
+        <div id="pd-image-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -ms-overflow-style:none; width:100%; height:100%; flex:1;" onscroll="updateSlideNumber()">
+          <img id="pd-image" src="" alt="Product Image" style="scroll-snap-align:start; flex:0 0 100%; width:100%; height:100%; object-fit:contain; background:var(--bg-alt);">
+        </div>
+        <button id="pd-prev-btn" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); color:#333; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2); display:none; align-items:center; justify-content:center; z-index:10;" onclick="scrollCarousel(-1)">❮</button>
+        <button id="pd-next-btn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); color:#333; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2); display:none; align-items:center; justify-content:center; z-index:10;" onclick="scrollCarousel(1)">❯</button>
+        <div id="pd-slide-indicator" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.6); color:#fff; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:none; z-index:10; pointer-events:none;">
+          1 / 1
+        </div>
       </div>
+      <style>
+        #pd-image-carousel::-webkit-scrollbar { display: none; }
+      </style>
 
       <!-- INFO -->
       <div class="pd-info">
@@ -344,7 +354,30 @@
         
         document.getElementById('bc-name').textContent = currentProduct.name;
         document.getElementById('pd-name').textContent = currentProduct.name;
-        document.getElementById('pd-image').src = currentProduct.image;
+        const images = (currentProduct.images && currentProduct.images.length > 0) ? currentProduct.images : [currentProduct.image];
+        window.currentProductImgCount = images.length;
+        const carousel = document.getElementById('pd-image-carousel');
+        if (carousel) {
+          carousel.innerHTML = '';
+          images.forEach(img => {
+            const el = document.createElement('img');
+            el.src = img;
+            el.alt = currentProduct.name;
+            el.style.cssText = 'scroll-snap-align:start; flex:0 0 100%; width:100%; height:100%; object-fit:contain; background:var(--bg-alt);';
+            carousel.appendChild(el);
+          });
+          
+          if (images.length > 1) {
+            document.getElementById('pd-prev-btn').style.display = 'flex';
+            document.getElementById('pd-next-btn').style.display = 'flex';
+            document.getElementById('pd-slide-indicator').style.display = 'block';
+            document.getElementById('pd-slide-indicator').textContent = '1 / ' + images.length;
+          } else {
+            document.getElementById('pd-prev-btn').style.display = 'none';
+            document.getElementById('pd-next-btn').style.display = 'none';
+            document.getElementById('pd-slide-indicator').style.display = 'none';
+          }
+        }
         document.getElementById('pd-desc').textContent = currentProduct.description;
         document.getElementById('pd-price').textContent = SM.formatPrice(currentProduct.price);
         
@@ -367,6 +400,20 @@
         document.getElementById('sticky-name').textContent = currentProduct.name;
         document.getElementById('sticky-price').textContent = SM.formatPrice(currentProduct.price);
         
+        window.updateSlideNumber = function() {
+          const carousel = document.getElementById('pd-image-carousel');
+          if(!carousel || !window.currentProductImgCount) return;
+          const slideIndex = Math.round(carousel.scrollLeft / carousel.clientWidth) + 1;
+          const indicator = document.getElementById('pd-slide-indicator');
+          if (indicator) indicator.textContent = slideIndex + ' / ' + window.currentProductImgCount;
+        };
+        
+        window.scrollCarousel = function(dir) {
+          const carousel = document.getElementById('pd-image-carousel');
+          if(!carousel) return;
+          carousel.scrollBy({ left: dir * carousel.clientWidth, behavior: 'smooth' });
+        };
+
         window.addEventListener('scroll', () => {
           const actionBtn = document.querySelector('.pd-actions');
           const stickyBar = document.querySelector('.sticky-cart-bar');
