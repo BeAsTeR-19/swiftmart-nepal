@@ -17,30 +17,104 @@
       background: var(--bg-alt);
     }
     .auth-brand {
+      background: linear-gradient(135deg, #78281f 0%, #b03a2e 40%, #e74c3c 100%);
       display: none;
-      width: 45%;
-      background: var(--primary);
-      color: #fff;
-      padding: 40px;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+      color: white;
+      width: 45%;
+    }
+    .auth-brand::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -30%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 65%);
+      border-radius: 50%;
+    }
+    .auth-brand::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0,0,0,0.15) 0%, transparent 65%);
+      border-radius: 50%;
+    }
+    .auth-brand-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 440px;
+    }
+    .auth-brand-content img {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .auth-brand-content h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .auth-brand-content p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+    .brand-trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 36px;
+    }
+    .brand-trust-badges .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 600;
+    }
+    .brand-trust-badges .badge svg {
+      color: #2ecc71;
+    }
+    .brand-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 40px;
+    }
+    .brand-stat {
       text-align: center;
     }
-    .auth-brand img {
-      width: 120px;
-      margin-bottom: 24px;
-    }
-    .auth-brand h1 {
+    .brand-stat .num {
+      font-size: 1.8rem;
+      font-weight: 900;
       color: #fff;
-      font-size: 32px;
-      margin-bottom: 16px;
     }
-    .auth-brand p {
-      color: rgba(255,255,255,0.8);
-      font-size: 16px;
-      max-width: 320px;
-      line-height: 1.6;
+    .brand-stat .lbl {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
     }
     .auth-form-panel {
       flex: 1;
@@ -192,9 +266,32 @@
 
   <div class="auth-page">
     <div class="auth-brand">
-      <img src="assets/images/logo_white.png" alt="SwiftMart Logo">
-      <h1>SwiftMart</h1>
-      <p>Upgrade Your Everyday.</p>
+      <div class="auth-brand-content">
+        <img src="assets/images/logo_white.png" alt="SwiftMart Logo">
+        <h1>SwiftMart</h1>
+        <p>Upgrade Your Everyday. Quality products delivered across Nepal.</p>
+        
+        <div class="brand-trust-badges">
+          <div class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Quality Guaranteed</div>
+          <div class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Fast Delivery</div>
+          <div class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Secure Payments</div>
+        </div>
+
+        <div class="brand-stats">
+          <div class="brand-stat">
+            <div class="num">1k+</div>
+            <div class="lbl">Products</div>
+          </div>
+          <div class="brand-stat">
+            <div class="num">10k+</div>
+            <div class="lbl">Customers</div>
+          </div>
+          <div class="brand-stat">
+            <div class="num">#1</div>
+            <div class="lbl">In Nepal</div>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div class="auth-form-panel">

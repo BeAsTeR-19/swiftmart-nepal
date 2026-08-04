@@ -382,6 +382,16 @@
             
             <div id="checkout-items" style="margin-bottom:16px;"></div>
             
+            <!-- Promo Code Section -->
+            <div class="promo-section" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+              <label for="promo-code-input" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-2); margin-bottom: 8px;">Have a promo code?</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="promo-code-input" placeholder="ENTER CODE" maxlength="12" style="flex: 1; padding: 10px 12px; font-size: 0.85rem; border: 1px solid var(--border); border-radius: var(--radius-sm); outline: none; text-transform: uppercase;">
+                <button type="button" id="promo-apply-btn" onclick="handlePromoCodeApply()" style="padding: 10px 16px; font-size: 0.85rem; font-weight: 700; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: 0.2s;">Apply</button>
+              </div>
+              <div id="promo-message" style="font-size: 0.78rem; font-weight: 600; margin-top: 8px; display: none;"></div>
+            </div>
+            
             <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
               <div class="cart-row" style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; color:var(--text-2);">
                 <span>Subtotal</span>
@@ -538,6 +548,8 @@
 
     function updateTotals() {
       const settings = SM.getSettings();
+      subtotalVal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      
       const zoneSelect = document.querySelector('select[name="zone"]');
       const isInside = zoneSelect ? zoneSelect.value === 'inside' : true;
       
@@ -545,17 +557,41 @@
       if (subtotalVal >= settings.freeDeliveryThreshold) {
         deliveryVal = 0;
       }
-
-      totalVal = subtotalVal + deliveryVal;
-
+      
+      let discountAmount = 0;
+      if (discountPercentage > 0) {
+        discountAmount = Math.floor(subtotalVal * (discountPercentage / 100));
+      }
+      
+      totalVal = subtotalVal + deliveryVal - discountAmount;
+      
       document.getElementById('co-subtotal').textContent = SM.formatPrice(subtotalVal);
       document.getElementById('co-delivery').textContent = deliveryVal === 0 ? 'Free' : SM.formatPrice(deliveryVal);
+      
+      if (discountAmount > 0) {
+        let discountRow = document.getElementById('co-discount-row');
+        if (!discountRow) {
+          const discountHtml = `
+            <div id="co-discount-row" class="cart-row" style="display:flex; justify-content:space-between; margin-bottom:16px; font-size:14px; color:var(--success, #27ae60);">
+              <span>Discount</span>
+              <span id="co-discount-amount" style="font-weight:600;">- ${SM.formatPrice(discountAmount)}</span>
+            </div>
+          `;
+          document.getElementById('co-delivery').parentElement.insertAdjacentHTML('afterend', discountHtml);
+        } else {
+          document.getElementById('co-discount-amount').textContent = `- ${SM.formatPrice(discountAmount)}`;
+        }
+      } else {
+        let discountRow = document.getElementById('co-discount-row');
+        if (discountRow) discountRow.remove();
+      }
+      
       document.getElementById('co-total').textContent = SM.formatPrice(totalVal);
     }
     
     function updateZoneFromProvince(prov) {
       const cityInput = document.querySelector('input[name="city"]');
-      const zoneSelect = document.getElementById('zone-select');
+      const zoneSelect = document.querySelector('select[name="zone"]');
       const city = cityInput ? cityInput.value.toLowerCase() : '';
       
       if (prov === 'Bagmati' && (city.includes('kathmandu') || city.includes('lalitpur') || city.includes('bhaktapur') || city.includes('ktm'))) {
