@@ -134,6 +134,14 @@
         </div>
       </div>
       <style>
+    #star-rating-select svg { cursor: pointer; color: #ddd; transition: color 0.2s; }
+    #star-rating-select svg.active { fill: #f39c12; color: #f39c12; }
+    .review-item { padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .review-item:last-child { border-bottom: none; }
+    .review-reply { background: var(--bg-alt); padding: 12px; border-radius: var(--radius-sm); margin-top: 10px; border-left: 3px solid var(--primary); }
+    .review-reply-header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+    .review-reply-header img { width: 20px; height: 20px; border-radius: 50%; }
+
         #pd-image-carousel::-webkit-scrollbar { display: none; }
       </style>
 
@@ -390,7 +398,7 @@
           document.getElementById('pd-discount').textContent = `-${pct}%`;
         }
 
-        document.getElementById('pd-reviews').textContent = `${currentProduct.reviews} reviews`;
+        document.getElementById('pd-reviews').textContent = `${currentProduct.reviewCount || 0} reviews`;
         
         // Stars
         let starHtml = '';
@@ -443,8 +451,8 @@
         const specTbody = document.getElementById('pd-specs-body');
         if (currentProduct.specs) {
           let specRows = '';
-          for (const [k, v] of Object.entries(currentProduct.specs)) {
-            specRows += `<tr><td>${k}</td><td>${v}</td></tr>`;
+          for (const spec of currentProduct.specs) {
+            specRows += `<tr><td>${spec.label}</td><td>${spec.value}</td></tr>`;
           }
           specTbody.innerHTML = specRows;
         }
@@ -452,7 +460,135 @@
       } else {
         document.getElementById('error-container').style.display = 'block';
       }
+      setupReviews();
     });
+
+    
+    let selectedRating = 0;
+    
+    function setupReviews() {
+      const stars = document.querySelectorAll('#star-rating-select svg');
+      stars.forEach(star => {
+        star.addEventListener('click', (e) => {
+          selectedRating = parseInt(e.currentTarget.getAttribute('data-val'));
+          stars.forEach(s => {
+            if(parseInt(s.getAttribute('data-val')) <= selectedRating) {
+              s.classList.add('active');
+            } else {
+              s.classList.remove('active');
+            }
+          });
+        });
+      });
+      
+      firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          document.getElementById('review-form-container').style.display = 'block';
+          document.getElementById('login-prompt').style.display = 'none';
+        } else {
+          document.getElementById('review-form-container').style.display = 'none';
+          document.getElementById('login-prompt').style.display = 'block';
+        }
+      });
+
+      renderReviews();
+    }
+
+    function renderReviews() {
+      const container = document.getElementById('reviews-list');
+      if(!currentProduct.reviews || currentProduct.reviews.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-3); font-size:14px;">No reviews yet. Be the first to review!</p>';
+        return;
+      }
+      
+      let html = '';
+      currentProduct.reviews.forEach(r => {
+        let starsHtml = '';
+        for(let i=1; i<=5; i++) {
+          if(i <= r.rating) starsHtml += '<svg width="14" height="14" fill="#f39c12" stroke="#f39c12" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+          else starsHtml += '<svg width="14" height="14" fill="none" stroke="#ddd" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+        }
+        
+        let replyHtml = '';
+        if(r.reply) {
+          replyHtml = `
+            <div class="review-reply">
+              <div class="review-reply-header">
+                <img src="assets/images/logo-icon.png" alt="SwiftMart" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22%23ff3366%22><circle cx=%2212%22 cy=%2212%22 r=%2212%22/></svg>'">
+                <span>SwiftMart</span>
+              </div>
+              <div style="font-size:13px; color:var(--text-2); line-height:1.4;">${r.reply}</div>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="review-item">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <strong style="font-size:14px;">${r.name || 'Anonymous'}</strong>
+              <span style="color:var(--text-3); font-size:12px;">${r.date || new Date().toISOString().split('T')[0]}</span>
+            </div>
+            <div style="margin-bottom:8px;">${starsHtml}</div>
+            <p style="font-size:14px; color:var(--text-2); line-height:1.5;">${r.text}</p>
+            ${replyHtml}
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    window.submitReview = async function() {
+      if(selectedRating === 0) return alert('Please select a rating.');
+      const text = document.getElementById('review-text').value.trim();
+      if(!text) return alert('Please write a review.');
+      
+      const user = firebase.auth().currentUser;
+      if(!user) return alert('Not logged in');
+
+      const newReview = {
+        name: user.displayName || 'Customer',
+        rating: selectedRating,
+        text: text,
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      currentProduct.reviews = currentProduct.reviews || [];
+      currentProduct.reviews.unshift(newReview);
+      
+      let totalRating = 0;
+      currentProduct.reviews.forEach(r => totalRating += r.rating);
+      currentProduct.rating = (totalRating / currentProduct.reviews.length).toFixed(1);
+      currentProduct.reviewCount = currentProduct.reviews.length;
+
+      try {
+        await SM.updateProduct(currentProduct.id, { 
+          reviews: currentProduct.reviews,
+          rating: parseFloat(currentProduct.rating),
+          reviewCount: currentProduct.reviewCount
+        });
+        
+        sessionStorage.removeItem('sm_cache_products');
+        document.getElementById('review-text').value = '';
+        selectedRating = 0;
+        document.querySelectorAll('#star-rating-select svg').forEach(s => s.classList.remove('active'));
+        
+        renderReviews();
+        
+        // Re-render header rating
+        let starHtml = '';
+        for(let i=0; i<5; i++) {
+          starHtml += `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < Math.floor(currentProduct.rating) ? 'var(--star)' : '#e5e5e5'}" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+        }
+        document.getElementById('pd-stars').innerHTML = starHtml;
+        document.getElementById('pd-reviews').textContent = `${currentProduct.reviewCount} reviews`;
+
+        alert('Thank you for your review!');
+      } catch(e) {
+        console.error(e);
+        alert('Error submitting review');
+      }
+    };
+
 
     function changeQty(delta) {
       if(!currentProduct || currentProduct.stock <= 0) return;

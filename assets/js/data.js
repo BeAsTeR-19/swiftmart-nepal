@@ -39,106 +39,48 @@ const initialProducts = [
   {
     id: 'p1', name: '1.8L Stainless Steel Electric Kettle', slug: 'electric-kettle-1-8l',
     category: 'Kitchen', price: 1250, oldPrice: 1500, stock: 25, badge: 'Sale',
-    image: 'assets/images/prod-kettle.jpg',
+    image: 'assets/images/prod-kettle.jpg', images: ['assets/images/prod-kettle.jpg'],
     description: 'A simple, reliable 1.8L kettle. Boils water quickly for your morning tea or instant noodles. Auto shut-off feature for safety. Made with food-grade stainless steel so it lasts longer without rusting.',
     specs: [{ label: 'Capacity', value: '1.8 Liters' }, { label: 'Material', value: 'Stainless Steel' }, { label: 'Power', value: '1500W' }],
-    rating: 4.5, reviewCount: 12,
+    rating: 4.5, reviewCount: 2,
     reviews: [
-      { name: 'Ramesh T.', city: 'Kathmandu', rating: 5, text: 'Ramro chha. Boils very fast.', date: '2025-10-12' },
-      { name: 'Sita M.', city: 'Lalitpur', rating: 4, text: 'Good quality for the price.', date: '2025-11-01' }
+      { name: 'Ramesh T.', city: 'Kathmandu', rating: 5, text: 'Ramro chha. Boils very fast.', date: '2025-10-12', reply: 'Thank you for the review Ramesh sir! Happy to be of service.' },
+      { name: 'Sita M.', city: 'Lalitpur', rating: 4, text: 'Is it safe to use continuously?', date: '2025-11-01', reply: 'Yes Sita ma\'am, it has an auto shut-off feature for safety! Just avoid running it dry.' }
     ]
   },
   {
-    id: 'p2', name: '2000W Smart Induction Cooktop', slug: 'smart-induction-cooktop-2000w',
-    category: 'Kitchen', price: 3500, oldPrice: 4200, stock: 15, badge: 'Hot',
-    image: 'assets/images/prod-induction.jpg',
-    description: 'Perfect for saving gas. This induction cooktop heats up fast and comes with touch controls. Great for boiling milk, making chiya, or full meals. Works with flat-bottom steel or iron utensils.',
-    specs: [{ label: 'Power', value: '2000W' }, { label: 'Control', value: 'Touch Panel' }, { label: 'Timer', value: 'Up to 3 hours' }],
-    rating: 4.8, reviewCount: 28,
-    reviews: [{ name: 'Binod K.', city: 'Pokhara', rating: 5, text: 'Very useful during gas shortage. Works perfectly.', date: '2025-12-05' }]
+    id: 'p2', name: 'Wireless Bluetooth Earbuds Pro', slug: 'wireless-earbuds-pro',
+    category: 'Electronics', price: 2500, oldPrice: 3500, stock: 15, badge: 'Hot',
+    image: 'assets/images/prod-earbuds.jpg', images: ['assets/images/prod-earbuds.jpg'],
+    description: 'Crystal clear sound with active noise cancellation. Enjoy up to 24 hours of battery life with the charging case. Sweat and water-resistant.',
+    specs: [{ label: 'Battery', value: '24 Hours' }, { label: 'Bluetooth', value: 'v5.3' }, { label: 'Waterproof', value: 'IPX4' }],
+    rating: 4.8, reviewCount: 1,
+    reviews: [
+      { name: 'Nabin', city: 'Pokhara', rating: 5, text: 'The bass is amazing! Best earbuds in this price range.', date: '2025-12-05', reply: 'We are thrilled you love the bass, Nabin! Let us know if you need any support.' }
+    ]
   },
   {
-    id: 'p3', name: 'Electric Rice Cooker 1.5L', slug: 'electric-rice-cooker-1-5l',
-    category: 'Kitchen', price: 2800, oldPrice: null, stock: 30, badge: null,
-    image: 'assets/images/prod-rice-cooker.jpg',
-    description: 'Cooks rice perfectly every time. Ideal for a family of 3-4 people. Comes with a steaming basket for momos or veggies. Non-stick inner pot makes it very easy to clean.',
-    specs: [{ label: 'Capacity', value: '1.5 Liters' }, { label: 'Accessories', value: 'Steamer, Measuring Cup, Spoon' }],
-    rating: 4.6, reviewCount: 18,
-    reviews: [{ name: 'Anjali S.', city: 'Bhaktapur', rating: 4, text: 'Bhat majjale pakchha. Easy to use.', date: '2025-09-20' }]
+    id: 'p3', name: 'Men\'s Casual Cotton T-Shirt', slug: 'mens-casual-cotton-tshirt',
+    category: 'Fashion', price: 850, oldPrice: 1200, stock: 50, badge: 'New',
+    image: 'assets/images/prod-tshirt.jpg', images: ['assets/images/prod-tshirt.jpg'],
+    description: 'Comfortable everyday t-shirt made with 100% breathable cotton. Perfect for the summer heat. Available in multiple colors.',
+    specs: [{ label: 'Material', value: '100% Cotton' }, { label: 'Fit', value: 'Regular' }, { label: 'Wash Care', value: 'Machine Wash' }],
+    rating: 4.2, reviewCount: 1,
+    reviews: [
+      { name: 'Anish', city: 'Dharan', rating: 4, text: 'Good material but fits a bit loose.', date: '2026-01-10', reply: 'Thank you for the feedback Anish! We\'ll make sure to add a detailed size chart soon.' }
+    ]
   },
   {
-    id: 'p4', name: '2-Burner Electric Hot Plate', slug: '2-burner-electric-hot-plate',
-    category: 'Kitchen', price: 4990, oldPrice: 5500, stock: 10, badge: 'New',
-    image: 'assets/images/prod-hot-plate.jpg',
-    description: 'A heavy-duty double hot plate for serious cooking. Both plates have independent temperature controls. Works with any type of cookware, not just induction base.',
-    specs: [{ label: 'Power', value: '1000W + 1500W' }, { label: 'Body', value: 'Cast Iron' }],
-    rating: 4.2, reviewCount: 5, reviews: []
-  },
-  {
-    id: 'p5', name: 'Adjustable Aluminum Laptop Stand', slug: 'adjustable-aluminum-laptop-stand',
-    category: 'Desk & Study', price: 1450, oldPrice: 1800, stock: 40, badge: 'Sale',
-    image: 'assets/images/prod-laptop-stand.jpg',
-    description: 'Say goodbye to neck pain. This portable aluminum laptop stand is fully adjustable to 6 different heights. Very sturdy, does not wobble while typing, and helps keep your laptop cool.',
-    specs: [{ label: 'Material', value: 'Aluminum Alloy' }, { label: 'Compatibility', value: '10" to 15.6" laptops' }],
-    rating: 4.9, reviewCount: 45,
-    reviews: [{ name: 'Prakash R.', city: 'Kathmandu', rating: 5, text: 'Ekdam strong chha. Typing is comfortable.', date: '2026-01-15' }]
-  },
-  {
-    id: 'p6', name: 'Rechargeable LED Desk Lamp', slug: 'rechargeable-led-desk-lamp',
-    category: 'Desk & Study', price: 1100, oldPrice: null, stock: 22, badge: null,
-    image: 'assets/images/prod-desk-lamp.jpg',
-    description: 'Perfect for load shedding or studying late. This LED lamp has 3 color modes (warm, natural, cool white) and is dimmable. Lasts up to 5 hours on a full charge.',
-    specs: [{ label: 'Battery', value: '2000mAh' }, { label: 'Charging', value: 'USB-C' }],
-    rating: 4.4, reviewCount: 20, reviews: []
-  },
-  {
-    id: 'p7', name: 'Quiet USB Desk Fan', slug: 'quiet-usb-desk-fan',
-    category: 'Desk & Study', price: 990, oldPrice: 1200, stock: 50, badge: 'Hot',
-    image: 'assets/images/prod-usb-fan.jpg',
-    description: 'A lifesaver during hot summer days in the office. Plugs right into your laptop or power bank. Very quiet motor so it will not disturb your meetings.',
-    specs: [{ label: 'Power Source', value: 'USB' }, { label: 'Speeds', value: '3 Speed Settings' }],
-    rating: 4.7, reviewCount: 33, reviews: []
-  },
-  {
-    id: 'p8', name: 'Silicone Cable Organizer Pack', slug: 'silicone-cable-organizer-pack',
-    category: 'Desk & Study', price: 450, oldPrice: null, stock: 100, badge: null,
-    image: 'assets/images/prod-cable-organizer.jpg',
-    description: 'Keep your desk clean and mess-free. This pack comes with 5 magnetic silicone clips to hold your charging cables and earphones in place.',
-    specs: [{ label: 'Quantity', value: '5 clips' }, { label: 'Material', value: 'Silicone' }],
-    rating: 4.5, reviewCount: 15, reviews: []
-  },
-  {
-    id: 'p9', name: 'Ultrasonic Air Humidifier 3L', slug: 'ultrasonic-air-humidifier-3l',
-    category: 'Home Comfort', price: 2400, oldPrice: 2800, stock: 18, badge: 'New',
-    image: 'assets/images/prod-humidifier.jpg',
-    description: 'Kathmandu dust making your throat dry? This 3L humidifier runs quietly all night to keep the air moist. Great for better sleep and avoiding dry skin in winter.',
-    specs: [{ label: 'Capacity', value: '3 Liters' }, { label: 'Runtime', value: 'Up to 12 hours' }],
-    rating: 4.8, reviewCount: 10,
-    reviews: [{ name: 'Nita S.', city: 'Kathmandu', rating: 5, text: 'Very helpful for my sinus. Runs silently.', date: '2026-02-10' }]
-  },
-  {
-    id: 'p10', name: 'Double Bed Electric Blanket', slug: 'double-bed-electric-blanket',
-    category: 'Home Comfort', price: 3200, oldPrice: 4000, stock: 12, badge: 'Sale',
-    image: 'assets/images/prod-humidifier.jpg',
-    description: 'Stay warm during freezing winter nights. Fits perfectly on a double bed. Has dual controllers so both sides can have different temperatures. Safe and energy efficient.',
-    specs: [{ label: 'Size', value: 'Double Bed (60x70 inches)' }, { label: 'Settings', value: '3 Heat Levels' }],
-    rating: 4.9, reviewCount: 55, reviews: []
-  },
-  {
-    id: 'p11', name: 'Essential Oil Aroma Diffuser', slug: 'essential-oil-aroma-diffuser',
-    category: 'Home Comfort', price: 1850, oldPrice: null, stock: 20, badge: null,
-    image: 'assets/images/prod-humidifier.jpg',
-    description: 'Make your room smell like a spa. Just add water and a few drops of your favorite essential oil. Also features soothing LED mood lighting.',
-    specs: [{ label: 'Capacity', value: '300ml' }, { label: 'Features', value: 'Auto shut-off, LED lights' }],
-    rating: 4.6, reviewCount: 14, reviews: []
-  },
-  {
-    id: 'p12', name: 'Heavy Duty Rechargeable Torch', slug: 'heavy-duty-rechargeable-torch',
-    category: 'Home Comfort', price: 1600, oldPrice: 1900, stock: 25, badge: 'Hot',
-    image: 'assets/images/prod-usb-fan.jpg',
-    description: 'A must-have for emergencies or night walks. Long range beam and very bright side light. Battery lasts for days on a single charge.',
+    id: 'p4', name: 'Rechargeable LED Flashlight', slug: 'rechargeable-led-flashlight',
+    category: 'Home & Outdoor', price: 950, oldPrice: 1300, stock: 0, badge: 'Sold Out',
+    image: 'assets/images/prod-flashlight.jpg', images: ['assets/images/prod-flashlight.jpg'],
+    description: 'High-power LED flashlight with a built-in rechargeable battery. Ideal for power outages and trekking. Long beam distance.',
     specs: [{ label: 'Battery', value: '4000mAh' }, { label: 'Range', value: 'Up to 500m' }],
-    rating: 4.7, reviewCount: 22, reviews: []
+    rating: 4.7, reviewCount: 2, 
+    reviews: [
+      { name: 'Gita', city: 'Bhaktapur', rating: 5, text: 'Very bright light. Helps a lot during load shedding.', date: '2026-02-14', reply: 'Glad it is helping you out Gita! Stay bright!' },
+      { name: 'Hari', city: 'Biratnagar', rating: 4, text: 'Does it come with a charger?', date: '2026-02-20', reply: 'Yes Hari sir, it includes a micro-USB charging cable in the box.' }
+    ]
   }
 ];
 
@@ -209,6 +151,29 @@ const SM = {
       this._products = initialProducts;
     } else {
       this._products = prodSnap.docs.map(d => d.data());
+      
+      // Temporary migration to seed reviews into existing products for demonstration
+      let needsUpdate = false;
+      const batch = db.batch();
+      this._products.forEach(prod => {
+        if (!prod.reviews || prod.reviews.length === 0) {
+          const initialMatch = initialProducts.find(ip => ip.id === prod.id);
+          if (initialMatch && initialMatch.reviews) {
+            prod.reviews = initialMatch.reviews;
+            prod.rating = initialMatch.rating;
+            prod.reviewCount = initialMatch.reviewCount;
+            batch.update(db.collection('products').doc(prod.id), {
+              reviews: prod.reviews,
+              rating: prod.rating,
+              reviewCount: prod.reviewCount
+            });
+            needsUpdate = true;
+          }
+        }
+      });
+      if (needsUpdate) {
+        batch.commit().catch(e => console.error('Migration error', e));
+      }
     }
     sessionStorage.setItem('sm_cache_products', JSON.stringify(this._products));
   },
