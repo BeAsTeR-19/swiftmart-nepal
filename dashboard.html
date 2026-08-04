@@ -146,15 +146,38 @@
       
       <div id="tab-profile" class="dash-card" style="display:none;">
         <h2>Profile Settings</h2>
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="text" id="prof-email" class="form-control" disabled>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Display Name</label>
-          <input type="text" id="prof-name" class="form-control" disabled>
-        </div>
-        <p style="font-size:13px; color:var(--text-3); margin-top:12px;">Profile updates are coming soon.</p>
+        <form id="profile-form">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="prof-email" class="form-control" disabled>
+            <small style="color:var(--text-3); font-size:12px;">Email cannot be changed.</small>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="prof-name" class="form-control" required placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" id="prof-phone" class="form-control" placeholder="e.g., 9800000000">
+          </div>
+<div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" id="prof-city" class="form-control" placeholder="e.g., Kathmandu">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Zone</label>
+            <input type="text" id="prof-zone" class="form-control" placeholder="e.g., Bagmati">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Area</label>
+            <input type="text" id="prof-area" class="form-control" placeholder="e.g., Baneshwor">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input type="text" id="prof-address" class="form-control" placeholder="e.g., Baneshwor, Ward 10">
+          </div>
+          <button type="submit" class="btn btn-primary" id="btn-save-profile">Save Profile</button>
+        </form>
       </div>
     </main>
   </div>
@@ -188,7 +211,67 @@
         
         document.getElementById('prof-email').value = user.email;
         document.getElementById('prof-name').value = user.displayName || user.email.split('@')[0];
-        
+
+        // Fetch user data from Firestore
+        db.collection('users').doc(user.uid).get().then(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+if (data.phone) document.getElementById('prof-phone').value = data.phone;
+            if (data.city) document.getElementById('prof-city').value = data.city;
+            if (data.zone) {
+              const pz = document.getElementById('prof-zone');
+              if (pz) pz.value = data.zone;
+            }
+            if (data.area) {
+              const pa = document.getElementById('prof-area');
+              if (pa) pa.value = data.area;
+            }
+            if (data.address) document.getElementById('prof-address').value = data.address;
+          }
+        });
+
+        // Handle profile save
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById('btn-save-profile');
+          btn.textContent = 'Saving...';
+          btn.disabled = true;
+
+const newName = document.getElementById('prof-name').value.trim();
+          const phone = document.getElementById('prof-phone').value.trim();
+          const city = document.getElementById('prof-city').value.trim();
+          const zoneEl = document.getElementById('prof-zone');
+          const areaEl = document.getElementById('prof-area');
+          const zone = zoneEl ? zoneEl.value.trim() : '';
+          const area = areaEl ? areaEl.value.trim() : '';
+          const address = document.getElementById('prof-address').value.trim();
+
+          try {
+            // Update Auth Profile
+            await user.updateProfile({ displayName: newName });
+            document.getElementById('hdr-user-name').textContent = newName;
+
+            // Update Firestore Profile
+            await db.collection('users').doc(user.uid).set({
+              name: newName,
+              email: user.email,
+              phone: phone,
+              city: city,
+              zone: zone,
+              area: area,
+              address: address,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            alert('Profile updated successfully!');
+          } catch(err) {
+            console.error(err);
+            alert('Failed to update profile.');
+          } finally {
+            btn.textContent = 'Save Profile';
+            btn.disabled = false;
+          }
+        });
         // Fetch Orders for this user
         try {
           const snap = await db.collection('orders').where('userId', '==', user.uid).get();
