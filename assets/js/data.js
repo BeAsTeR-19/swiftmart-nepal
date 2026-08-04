@@ -150,6 +150,39 @@ const SM = {
   async init() {
     if (this._products && this._settings) return;
     
+    // Check sessionStorage cache first for instant loads
+    const cachedSettings = sessionStorage.getItem('sm_cache_settings');
+    const cachedProducts = sessionStorage.getItem('sm_cache_products');
+    
+    if (cachedSettings && cachedProducts) {
+      this._settings = JSON.parse(cachedSettings);
+      this._products = JSON.parse(cachedProducts);
+      this.initDrawer();
+      
+      // Still fetch in background to keep data fresh for NEXT page load
+      this._backgroundRefresh();
+      this._initLocal();
+      return;
+    }
+    
+    await this._fetchFromFirebase();
+    this._initLocal();
+  },
+  
+  async _backgroundRefresh() {
+    try {
+      const settingsSnap = await db.collection('settings').doc('store').get();
+      if (settingsSnap.exists) {
+        sessionStorage.setItem('sm_cache_settings', JSON.stringify(settingsSnap.data()));
+      }
+      const prodSnap = await db.collection('products').get();
+      if (!prodSnap.empty) {
+        sessionStorage.setItem('sm_cache_products', JSON.stringify(prodSnap.docs.map(d => d.data())));
+      }
+    } catch(e) { console.warn('Background refresh failed', e); }
+  },
+
+  async _fetchFromFirebase() {
     // Check if settings exists in Firestore, if not populate initial data
     const settingsSnap = await db.collection('settings').doc('store').get();
     if (!settingsSnap.exists) {
@@ -164,6 +197,7 @@ const SM = {
       }
     }
     this.initDrawer();
+    sessionStorage.setItem('sm_cache_settings', JSON.stringify(this._settings));
     
     const prodSnap = await db.collection('products').get();
     if (prodSnap.empty) {
@@ -176,7 +210,10 @@ const SM = {
     } else {
       this._products = prodSnap.docs.map(d => d.data());
     }
-
+    sessionStorage.setItem('sm_cache_products', JSON.stringify(this._products));
+  },
+  
+  _initLocal() {
     if (!localStorage.getItem(sm_keys.cart)) localStorage.setItem(sm_keys.cart, JSON.stringify([]));
     if (!localStorage.getItem(sm_keys.wishlist)) localStorage.setItem(sm_keys.wishlist, JSON.stringify([]));
   },
