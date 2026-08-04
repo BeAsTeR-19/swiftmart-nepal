@@ -441,6 +441,6 @@ firebase.auth().onAuthStateChanged(user => {
   const nameEl = document.getElementById('hdr-user-name');
   if (user && nameEl) {
     nameEl.textContent = user.displayName || user.email.split('@')[0];
-    document.getElementById('hdr-user').href = '/dashboard';
+    document.getElementById('hdr-user').href = 'dashboard.html';
   }
 });

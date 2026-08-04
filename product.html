@@ -31,14 +31,14 @@
   <header class="header">
     <div class="header-inner container">
       <!-- LOGO -->
-      <a href="/" class="logo-link">
+      <a href="index.html" class="logo-link">
         <img src="assets/images/logo_white.png" alt="SwiftMart Nepal Logo" class="logo-img">
         <span class=\"logo-text\">SwiftMart</span>
       </a>
 
       <!-- SEARCH -->
       <div class="search-wrap">
-        <form id="search-form" action="/shop" method="GET">
+        <form id="search-form" action="shop.html" method="GET">
           <input type="text" name="q" placeholder="Search for products & more..." required>
           <button type="submit" class="search-btn">Search</button>
         </form>
@@ -47,18 +47,18 @@
       <!-- HEADER ACTIONS -->
       <div class="hdr-actions">
         <!-- Wishlist -->
-        <a href="/shop?wishlist=true" class="hdr-btn" aria-label="Wishlist">
+        <a href="shop.html?wishlist=true" class="hdr-btn" aria-label="Wishlist">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
         </a>
         
         <!-- Cart -->
-        <a href="/cart" class="hdr-btn" aria-label="Cart">
+        <a href="cart.html" class="hdr-btn" aria-label="Cart">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
           <span class="cart-count">0</span>
         </a>
 
         <!-- User -->
-        <a href="/login" class="hdr-user-btn" id="hdr-user">
+        <a href="login.html" class="hdr-user-btn" id="hdr-user">
           <div class="icon-user">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           </div>
@@ -78,13 +78,13 @@
     <!-- DESKTOP NAV -->
     <nav class="nav">
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/shop">Shop All</a></li>
-        <li><a href="/shop?cat=Kitchen">Kitchen</a></li>
-        <li><a href="/shop?cat=Desk+%26+Study">Desk & Study</a></li>
-        <li><a href="/shop?cat=Home+Comfort">Home Comfort</a></li>
-        <li><a href="/order-tracking">Track Order</a></li>
-        <li><a href="/about">About</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop All</a></li>
+        <li><a href="shop.html?cat=Kitchen">Kitchen</a></li>
+        <li><a href="shop.html?cat=Desk+%26+Study">Desk & Study</a></li>
+        <li><a href="shop.html?cat=Home+Comfort">Home Comfort</a></li>
+        <li><a href="order-tracking.html">Track Order</a></li>
+        <li><a href="about.html">About</a></li>
       </ul>
     </nav>
   </header>
@@ -97,27 +97,27 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
             <div class="mob-search" style="margin-top:40px; margin-bottom: 20px; padding-right:12px;">
-        <form action="/shop" method="GET" style="display:flex; border:1.5px solid var(--border); border-radius:100px; overflow:hidden;">
+        <form action="shop.html" method="GET" style="display:flex; border:1.5px solid var(--border); border-radius:100px; overflow:hidden;">
           <input type="text" name="q" placeholder="Search products..." style="flex:1; border:none; padding:10px 14px; outline:none; font-size:16px;">
           <button type="submit" style="background:var(--primary-light); color:#fff; border:none; padding:0 16px; font-weight:600;"><i class="fas fa-search" style="font-style:normal;">Go</i></button>
         </form>
       </div>
       <div style="margin-top: 20px;">
-        <a href="/">Home</a>
-        <a href="/shop">Shop All</a>
-        <a href="/shop?cat=Kitchen">Kitchen</a>
-        <a href="/shop?cat=Desk+%26+Study">Desk & Study</a>
-        <a href="/shop?cat=Home+Comfort">Home Comfort</a>
-        <a href="/order-tracking">Track Order</a>
-        <a href="/about">About Us</a>
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop All</a>
+        <a href="shop.html?cat=Kitchen">Kitchen</a>
+        <a href="shop.html?cat=Desk+%26+Study">Desk & Study</a>
+        <a href="shop.html?cat=Home+Comfort">Home Comfort</a>
+        <a href="order-tracking.html">Track Order</a>
+        <a href="about.html">About Us</a>
       </div>
     </div>
   </div>
 
   <div class="container" id="product-container" style="display:none;">
     <div class="breadcrumb">
-      <a href="/">Home</a> <span>/</span> 
-      <a href="/shop">Shop</a> <span>/</span> 
+      <a href="index.html">Home</a> <span>/</span> 
+      <a href="shop.html">Shop</a> <span>/</span> 
       <span id="bc-name">Product</span>
     </div>
 
@@ -192,7 +192,7 @@
     <div class="empty-state">
       <h3>Product Not Found</h3>
       <p>The product you're looking for doesn't exist or has been removed.</p>
-      <a href="/shop" class="btn btn-primary">Return to Shop</a>
+      <a href="shop.html" class="btn btn-primary">Return to Shop</a>
     </div>
   </div>
 
@@ -228,9 +228,9 @@
         <div class="footer-col">
           <h3>Quick Links</h3>
           <div class="footer-links">
-            <a href="/shop">Shop All</a>
-            <a href="/order-tracking">Track Order</a>
-            <a href="/about">About Us</a>
+            <a href="shop.html">Shop All</a>
+            <a href="order-tracking.html">Track Order</a>
+            <a href="about.html">About Us</a>
             <a href="/about#faq">FAQ & Delivery</a>
           </div>
         </div>
