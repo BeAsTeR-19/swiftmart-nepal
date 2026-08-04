@@ -24,13 +24,16 @@ const defaultSettings = {
 };
 
 // Migrate old settings seamlessly
-let _existingSettings = JSON.parse(localStorage.getItem(sm_keys.settings) || 'null');
-if (_existingSettings && _existingSettings.freeDeliveryThreshold === 2000) {
-  _existingSettings.freeDeliveryThreshold = 3000;
-  _existingSettings.announcement = 'Free delivery all over Nepal on orders over Rs 3,000!';
-  _existingSettings.valleyDeliveryDays = '1';
-  localStorage.setItem(sm_keys.settings, JSON.stringify(_existingSettings));
-}
+let _existingSettings = null;
+try {
+  _existingSettings = JSON.parse(localStorage.getItem(sm_keys.settings) || 'null');
+  if (_existingSettings && _existingSettings.freeDeliveryThreshold === 2000) {
+    _existingSettings.freeDeliveryThreshold = 3000;
+    _existingSettings.announcement = 'Free delivery everywhere on orders over Rs 3,000';
+    _existingSettings.valleyDeliveryDays = '1';
+    localStorage.setItem(sm_keys.settings, JSON.stringify(_existingSettings));
+  }
+} catch(e) { console.warn('localStorage not available in data.js'); }
 
 const initialProducts = [
   {
