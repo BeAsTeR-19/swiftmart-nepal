@@ -293,10 +293,10 @@
       const grid = document.getElementById('shop-grid');
       const emptyState = document.getElementById('empty-state');
       const countEl = document.getElementById('product-count');
-      const searchInput = document.getElementById('search-input');
+      const searchInput = document.querySelector('input[name="q"]');
       const bcCurrent = document.getElementById('bc-current');
 
-      if(query) {
+      if(query && searchInput) {
         searchInput.value = query;
         bcCurrent.textContent = `Search: "${query}"`;
       } else if (category) {
@@ -319,7 +319,7 @@
         }
 
         // 2. Search Filter
-        const q = searchInput.value.toLowerCase();
+        const q = searchInput?.value.toLowerCase() || '';
         if (q) {
           products = products.filter(p => 
             p.name.toLowerCase().includes(q) || 
