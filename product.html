@@ -32,7 +32,7 @@
     <div class="header-inner container">
       <!-- LOGO -->
       <a href="index.html" class="logo-link">
-        <img src="assets/images/logo_white.png" alt="SwiftMart Nepal Logo" class="logo-img">
+        <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
         <span class=\"logo-text\">SwiftMart</span>
       </a>
 
@@ -123,14 +123,20 @@
 
     <div class="pd-layout">
       <!-- IMAGE GALLERY -->
-      <div class="pd-gallery" style="position:relative; display:flex; flex-direction:column; overflow:hidden;">
-        <div id="pd-image-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -ms-overflow-style:none; width:100%; height:100%; flex:1;" onscroll="updateSlideNumber()">
-          <img id="pd-image" src="" alt="Product Image" style="scroll-snap-align:start; flex:0 0 100%; width:100%; height:100%; object-fit:contain; background:var(--bg-alt);">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="pd-gallery" style="position:relative; display:flex; flex-direction:column; overflow:hidden; padding:0; background:none; border:none;">
+          <div id="pd-image-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -ms-overflow-style:none; width:100%; border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--bg-alt);" onscroll="updateSlideNumber()">
+            <img id="pd-image" src="" alt="Product Image" style="scroll-snap-align:start; flex:0 0 100%; width:100%; aspect-ratio:1/1; max-height:400px; object-fit:contain; background:var(--bg-alt);">
+          </div>
+          <button id="pd-prev-btn" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); color:#333; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2); display:none; align-items:center; justify-content:center; z-index:10;" onclick="scrollCarousel(-1)">❮</button>
+          <button id="pd-next-btn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); color:#333; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2); display:none; align-items:center; justify-content:center; z-index:10;" onclick="scrollCarousel(1)">❯</button>
+          <div id="pd-slide-indicator" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.6); color:#fff; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:none; z-index:10; pointer-events:none;">
+            1 / 1
+          </div>
         </div>
-        <button id="pd-prev-btn" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); color:#333; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2); display:none; align-items:center; justify-content:center; z-index:10;" onclick="scrollCarousel(-1)">❮</button>
-        <button id="pd-next-btn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); color:#333; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2); display:none; align-items:center; justify-content:center; z-index:10;" onclick="scrollCarousel(1)">❯</button>
-        <div id="pd-slide-indicator" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.6); color:#fff; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:none; z-index:10; pointer-events:none;">
-          1 / 1
+        
+        <!-- THUMBNAILS -->
+        <div id="pd-thumbnails" style="display:flex; gap:12px; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:4px;">
         </div>
       </div>
       <style>
@@ -176,15 +182,15 @@
         
         <div style="display:flex; gap:12px; margin-top:16px; font-size:12px; color:var(--text-3); flex-wrap:wrap; justify-content:space-between; background:var(--bg-alt); padding:12px; border-radius:var(--radius-sm);">
           <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:max-content; justify-content:center;">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Secure Checkout
           </div>
           <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:max-content; justify-content:center;">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
             Fast Delivery
           </div>
           <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:max-content; justify-content:center;">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
             Easy Returns
           </div>
         </div>
@@ -220,7 +226,7 @@
       <div class="footer-grid">
         <div class="footer-col">
           <div class="flex items-center gap-2 mb-3">
-            <img src="assets/images/logo_white.png" alt="Logo" style="height:40px; border-radius:4px;">
+            <img src="assets/images/logo.jpeg" alt="Logo" style="height:40px; border-radius:4px;">
             <span style=\"font-family:var(--font-h); font-weight:800; font-size:18px; letter-spacing:-0.5px; color:#fff;\">SwiftMart</span>
           </div>
           <p>We are a small business based in Kathmandu bringing you genuinely useful everyday products. Reliable quality, honest pricing.</p>
@@ -302,6 +308,12 @@
     </div>
   </div>
 
+  <!-- ZOOM MODAL -->
+  <div id="image-zoom-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column;" onclick="closeZoomModal()">
+    <button onclick="closeZoomModal()" style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:white; font-size:36px; cursor:pointer;">&times;</button>
+    <img id="zoomed-image" src="" style="max-width:90vw; max-height:90vh; object-fit:contain; transition:transform 0.2s ease-out; cursor:zoom-in;" onclick="toggleZoom(event)">
+  </div>
+
   <!-- SCRIPTS -->
   
   <!-- Firebase Compat SDKs -->
@@ -368,14 +380,30 @@
         const images = (currentProduct.images && currentProduct.images.length > 0) ? currentProduct.images : [currentProduct.image];
         window.currentProductImgCount = images.length;
         const carousel = document.getElementById('pd-image-carousel');
+        const thumbnailsContainer = document.getElementById('pd-thumbnails');
         if (carousel) {
           carousel.innerHTML = '';
-          images.forEach(img => {
+          if (thumbnailsContainer) thumbnailsContainer.innerHTML = '';
+          
+          images.forEach((img, idx) => {
+            // Main image in carousel
             const el = document.createElement('img');
             el.src = img;
             el.alt = currentProduct.name;
-            el.style.cssText = 'scroll-snap-align:start; flex:0 0 100%; width:100%; height:100%; object-fit:contain; background:var(--bg-alt);';
+            el.style.cssText = 'scroll-snap-align:start; flex:0 0 100%; width:100%; height:100%; object-fit:contain; background:var(--bg-alt); cursor:zoom-in;';
+            el.onclick = () => window.openZoomModal(img);
             carousel.appendChild(el);
+            
+            // Thumbnail
+            if (thumbnailsContainer && images.length > 1) {
+              const thumb = document.createElement('img');
+              thumb.src = img;
+              thumb.style.cssText = `width:64px; height:64px; object-fit:contain; border-radius:var(--radius-sm); border:2px solid ${idx===0 ? 'var(--primary)' : 'transparent'}; cursor:pointer; background:var(--bg-alt); flex-shrink:0; transition:border 0.2s;`;
+              thumb.onclick = () => {
+                window.scrollToSlide(idx);
+              };
+              thumbnailsContainer.appendChild(thumb);
+            }
           });
           
           if (images.length > 1) {
@@ -414,15 +442,57 @@
         window.updateSlideNumber = function() {
           const carousel = document.getElementById('pd-image-carousel');
           if(!carousel || !window.currentProductImgCount) return;
-          const slideIndex = Math.round(carousel.scrollLeft / carousel.clientWidth) + 1;
+          const slideIndex = Math.round(carousel.scrollLeft / carousel.clientWidth);
           const indicator = document.getElementById('pd-slide-indicator');
-          if (indicator) indicator.textContent = slideIndex + ' / ' + window.currentProductImgCount;
+          if (indicator) indicator.textContent = (slideIndex + 1) + ' / ' + window.currentProductImgCount;
+          
+          // Update thumbnails
+          const thumbs = document.getElementById('pd-thumbnails');
+          if (thumbs) {
+            Array.from(thumbs.children).forEach((thumb, i) => {
+              thumb.style.border = (i === slideIndex) ? '2px solid var(--primary)' : '2px solid transparent';
+            });
+          }
+        };
+        
+        window.scrollToSlide = function(idx) {
+          const carousel = document.getElementById('pd-image-carousel');
+          if(!carousel) return;
+          carousel.scrollTo({ left: idx * carousel.clientWidth, behavior: 'smooth' });
         };
         
         window.scrollCarousel = function(dir) {
           const carousel = document.getElementById('pd-image-carousel');
           if(!carousel) return;
           carousel.scrollBy({ left: dir * carousel.clientWidth, behavior: 'smooth' });
+        };
+        
+        // Zoom Modal Functions
+        window.openZoomModal = function(src) {
+          document.getElementById('zoomed-image').src = src;
+          document.getElementById('zoomed-image').style.transform = 'scale(1)';
+          document.getElementById('image-zoom-modal').style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        };
+        
+        window.closeZoomModal = function() {
+          document.getElementById('image-zoom-modal').style.display = 'none';
+          document.body.style.overflow = '';
+        };
+        
+        let zoomedIn = false;
+        window.toggleZoom = function(e) {
+          e.stopPropagation(); // prevent modal close
+          const img = document.getElementById('zoomed-image');
+          if (zoomedIn) {
+            img.style.transform = 'scale(1)';
+            img.style.cursor = 'zoom-in';
+            zoomedIn = false;
+          } else {
+            img.style.transform = 'scale(2)';
+            img.style.cursor = 'zoom-out';
+            zoomedIn = true;
+          }
         };
 
         window.addEventListener('scroll', () => {

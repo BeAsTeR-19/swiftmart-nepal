@@ -221,7 +221,7 @@
   <header class="header">
     <div class="header-inner container">
       <a href="index.html" class="logo-link">
-        <img src="assets/images/logo_white.png" alt="SwiftMart Nepal Logo" class="logo-img">
+        <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
         <span class=\"logo-text\">SwiftMart</span>
       </a>
       <a href="cart.html" style="margin-left:auto; font-weight:600; color:var(--text-2); font-size:14px;">
@@ -258,35 +258,38 @@
 
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="pay-form-group">
-                  <label>Province *</label>
-                  <select name="province" required onchange="updateZoneFromProvince(this.value)">
-                    <option value="">Select Province</option>
-                    <option value="Koshi">Koshi</option>
-                    <option value="Madhesh">Madhesh</option>
-                    <option value="Bagmati">Bagmati</option>
-                    <option value="Gandaki">Gandaki</option>
-                    <option value="Lumbini">Lumbini</option>
-                    <option value="Karnali">Karnali</option>
-                    <option value="Sudurpashchim">Sudurpashchim</option>
+                  <label>City *</label>
+                  <select name="city" id="pathaoCity" required onchange="loadPathaoZones()">
+                    <option value="">Loading Cities...</option>
                   </select>
                 </div>
                 <div class="pay-form-group">
-                  <label>City *</label>
-                  <input type="text" name="city" required placeholder="E.g., Kathmandu">
+                  <label>Zone *</label>
+                  <select name="zone" id="pathaoZone" required onchange="loadPathaoAreas()">
+                    <option value="">Select City first</option>
+                  </select>
                 </div>
               </div>
               
               <div class="pay-form-group" style="display:none;">
                 <label>Delivery Zone *</label>
-                <select name="zone" id="zone-select" onchange="updateTotals()">
+                <select name="deliveryZone" id="zone-select" onchange="updateTotals()">
                   <option value="inside">Inside Kathmandu Valley</option>
                   <option value="outside">Outside Valley</option>
                 </select>
               </div>
 
-              <div class="pay-form-group">
-                <label>Street Address & Landmark *</label>
-                <textarea name="address" required placeholder="Street name, landmark, etc."></textarea>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="pay-form-group">
+                  <label>Area *</label>
+                  <select name="area" id="pathaoArea" required>
+                    <option value="">Select Zone first</option>
+                  </select>
+                </div>
+                <div class="pay-form-group">
+                  <label>Street Address & Landmark *</label>
+                  <input type="text" name="address" required placeholder="Street name, landmark, etc.">
+                </div>
               </div>
 
               <div class="pay-form-group" style="margin-bottom:0;">
@@ -458,6 +461,21 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       await SM.init();
+      
+      firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+          const doc = await db.collection('users').doc(user.uid).get();
+          if (doc.exists) {
+            const data = doc.data();
+            if(data.name) document.querySelector('input[name="name"]').value = data.name;
+            if(data.phone) document.querySelector('input[name="phone"]').value = data.phone;
+            if(data.address) document.querySelector('input[name="address"]').value = data.address;
+          } else {
+            document.querySelector('input[name="name"]').value = user.displayName || user.email.split('@')[0];
+          }
+        }
+      });
+
       const cart = SM.getCart();
       if(cart.length === 0) {
         window.location.href = '/cart';
@@ -492,12 +510,80 @@
       });
       itemsContainer.innerHTML = html;
       updateTotals();
+      
+      // Initialize Pathao logic
+      const settings = SM.getSettings();
+      let pathaoToken = '';
+      async function fetchPathao(endpoint, method = 'GET', body = null) {
+        const headers = { 'Authorization': pathaoToken ? `Bearer ${pathaoToken}` : '' };
+        const res = await fetch('/api/pathao', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: 'https://api-hermes.pathao.com' + endpoint, method, headers, body })
+        });
+        return res.json();
+      }
 
-      document.getElementById('checkout-form').addEventListener('submit', (e) => {
+      if (settings.pathaoClient) {
+        try {
+          const authRes = await fetchPathao('/aladdin/api/v1/issue-token', 'POST', {
+            client_id: settings.pathaoClient, client_secret: settings.pathaoSecret,
+            username: settings.pathaoUser, password: settings.pathaoPass, grant_type: 'password'
+          });
+          pathaoToken = authRes.access_token || (authRes.data && authRes.data.access_token) || authRes.id_token;
+          
+          document.getElementById('pathaoCity').innerHTML = '<option value="">Loading Cities...</option>';
+          const citiesRes = await fetchPathao('/aladdin/api/v1/countries/1/city-list');
+          const cities = citiesRes.data.data || citiesRes.data;
+          document.getElementById('pathaoCity').innerHTML = '<option value="">-- Select City --</option>' + cities.map(c => `<option value="${c.city_id}">${c.city_name}</option>`).join('');
+        } catch (e) {
+          console.error('Pathao Init Error:', e);
+          document.getElementById('pathaoCity').innerHTML = '<option value="">Failed to load cities</option>';
+        }
+      }
+
+      window.loadPathaoZones = async () => {
+        const cid = document.getElementById('pathaoCity').value;
+        const cityEl = document.getElementById('pathaoCity');
+        const cityName = cityEl.options[cityEl.selectedIndex]?.text || '';
+        const zoneSelect = document.getElementById('zone-select');
+        
+        if (cityName.toLowerCase().includes('kathmandu') || cityName.toLowerCase().includes('lalitpur') || cityName.toLowerCase().includes('bhaktapur')) {
+          zoneSelect.value = 'inside';
+        } else {
+          zoneSelect.value = 'outside';
+        }
+        updateTotals();
+        
+        if(!cid) return;
+        document.getElementById('pathaoZone').innerHTML = '<option value="">Loading...</option>';
+        const zonesRes = await fetchPathao(`/aladdin/api/v1/cities/${cid}/zone-list`);
+        const zones = zonesRes.data.data || zonesRes.data;
+        document.getElementById('pathaoZone').innerHTML = '<option value="">-- Select Zone --</option>' + zones.map(z => `<option value="${z.zone_id}">${z.zone_name}</option>`).join('');
+        document.getElementById('pathaoArea').innerHTML = '<option value="">Select Zone first</option>';
+      };
+
+      window.loadPathaoAreas = async () => {
+        const zid = document.getElementById('pathaoZone').value;
+        if(!zid) return;
+        document.getElementById('pathaoArea').innerHTML = '<option value="">Loading...</option>';
+        const areasRes = await fetchPathao(`/aladdin/api/v1/zones/${zid}/area-list`);
+        const areas = areasRes.data.data || areasRes.data;
+        document.getElementById('pathaoArea').innerHTML = '<option value="">-- Select Area --</option>' + areas.map(a => `<option value="${a.area_id}">${a.area_name}</option>`).join('');
+      };
+
+      document.getElementById('checkout-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const fd = new FormData(e.target);
         const data = Object.fromEntries(fd.entries());
+        
+        const cityEl = document.getElementById('pathaoCity');
+        const zoneEl = document.getElementById('pathaoZone');
+        const areaEl = document.getElementById('pathaoArea');
+        
+        data.city = cityEl.options[cityEl.selectedIndex]?.text || '';
+        data.zone = zoneEl.options[zoneEl.selectedIndex]?.text || '';
+        data.area = areaEl.options[areaEl.selectedIndex]?.text || '';
         
         let txId = '';
         if (data.paymentMethod === 'eSewa') {
@@ -524,7 +610,8 @@
             phone: data.phone,
             zone: data.zone,
             city: data.city,
-            province: data.province,
+            area: data.area,
+            province: '',
             address: data.address,
             note: data.note || ''
           },
@@ -550,7 +637,7 @@
       const settings = SM.getSettings();
       subtotalVal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
       
-      const zoneSelect = document.querySelector('select[name="zone"]');
+      const zoneSelect = document.getElementById('zone-select');
       const isInside = zoneSelect ? zoneSelect.value === 'inside' : true;
       
       deliveryVal = isInside ? settings.deliveryFeeInside : settings.deliveryFeeOutside;
@@ -589,24 +676,6 @@
       document.getElementById('co-total').textContent = SM.formatPrice(totalVal);
     }
     
-    function updateZoneFromProvince(prov) {
-      const cityInput = document.querySelector('input[name="city"]');
-      const zoneSelect = document.querySelector('select[name="zone"]');
-      const city = cityInput ? cityInput.value.toLowerCase() : '';
-      
-      if (prov === 'Bagmati' && (city.includes('kathmandu') || city.includes('lalitpur') || city.includes('bhaktapur') || city.includes('ktm'))) {
-        zoneSelect.value = 'inside';
-      } else {
-        zoneSelect.value = 'outside';
-      }
-      updateTotals();
-    }
-    
-    document.querySelector('input[name="city"]')?.addEventListener('input', () => {
-      const prov = document.querySelector('select[name="province"]').value;
-      updateZoneFromProvince(prov);
-    });
-
     function switchTab(tabId) {
       document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
