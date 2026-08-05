@@ -491,7 +491,7 @@
         if(!p) return;
         const lineTotal = p.price * item.quantity;
         subtotalVal += lineTotal;
-        cartItems.push({ id: p.id, name: p.name, price: p.price, qty: item.quantity });
+        cartItems.push({ id: p.id, name: p.name, price: p.price, quantity: item.quantity });
         
         html += `
           <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px;">
