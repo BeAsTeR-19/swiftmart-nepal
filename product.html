@@ -125,6 +125,12 @@
       <!-- IMAGE GALLERY -->
       <div style="display:flex; flex-direction:column; gap:16px;">
         <div class="pd-gallery" style="position:relative; display:flex; flex-direction:column; overflow:hidden; padding:0; background:none; border:none;">
+
+          <!-- WISHLIST BUTTON (Top Right of Image) -->
+          <button id="pd-wish-btn" class="pc-wish" style="position:absolute; top:16px; right:16px; z-index:20; background:rgba(255,255,255,0.9); box-shadow:0 2px 8px rgba(0,0,0,0.15);" aria-label="Wishlist">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+
           <div id="pd-image-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -ms-overflow-style:none; width:100%; border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--bg-alt);" onscroll="updateSlideNumber()">
             <img id="pd-image" src="" alt="Product Image" style="scroll-snap-align:start; flex:0 0 100%; width:100%; aspect-ratio:1/1; max-height:400px; object-fit:contain; background:var(--bg-alt);">
           </div>
@@ -419,6 +425,22 @@
         }
         document.getElementById('pd-desc').textContent = currentProduct.description;
         document.getElementById('pd-price').textContent = SM.formatPrice(currentProduct.price);
+
+        // Setup Wishlist Button
+        const wishBtn = document.getElementById('pd-wish-btn');
+        if (wishBtn) {
+          const isW = window.SM.isWishlisted(currentProduct.id);
+          wishBtn.classList.toggle('active', isW);
+          wishBtn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (isW ? '#c65d1a' : 'none') + '" stroke="' + (isW ? '#c65d1a' : '#999') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+          
+          wishBtn.onclick = function(e) {
+            e.stopPropagation();
+            window.SM.toggleWishlist(currentProduct.id);
+            const nw = window.SM.isWishlisted(currentProduct.id);
+            this.classList.toggle('active', nw);
+            this.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (nw ? '#c65d1a' : 'none') + '" stroke="' + (nw ? '#c65d1a' : '#999') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+          };
+        }
         
         if (currentProduct.oldPrice > currentProduct.price) {
           document.getElementById('pd-old-price').textContent = SM.formatPrice(currentProduct.oldPrice);
