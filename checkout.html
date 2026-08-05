@@ -224,15 +224,15 @@
         <img src="assets/images/logo.jpeg" alt="SwiftMart Nepal Logo" class="logo-img">
         <span class=\"logo-text\">SwiftMart</span>
       </a>
-      <a href="cart.html" style="margin-left:auto; font-weight:600; color:var(--text-2); font-size:14px;">
-        Back to Cart
+      <a href="cart.html" style="margin-left:auto; font-weight:600; color:#fff; font-size:14px; text-decoration:none; display:flex; align-items:center; gap:4px;">
+        &larr; Back to Cart
       </a>
     </div>
   </header>
 
   <div class="checkout-page">
     <div class="checkout-header">
-      <h1>Secure Checkout</h1>
+      <h1 style="display:flex; align-items:center; gap:8px;"><svg style="width:28px;height:28px;fill:#4CAF50;" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>Secure Checkout</h1>
       <p>Complete your purchase to receive your items</p>
     </div>
 
@@ -366,7 +366,7 @@
               </div>
 
               <label class="consent-checkbox">
-                <input type="checkbox" required>
+                <input type="checkbox" id="policy-checkbox">
                 <span>I confirm that the delivery details provided are correct and I agree to SwiftMart's <a href="terms.html" target="_blank" style="color:var(--primary); font-weight:600; text-decoration:underline;" onclick="event.stopPropagation()">Terms & Conditions</a>, <a href="privacy.html" target="_blank" style="color:var(--primary); font-weight:600; text-decoration:underline;" onclick="event.stopPropagation()">Privacy Policy</a>, and <a href="returns.html" target="_blank" style="color:var(--primary); font-weight:600; text-decoration:underline;" onclick="event.stopPropagation()">Return Policy</a>.</span>
               </label>
 
@@ -512,7 +512,13 @@
       updateTotals();
       
       // Initialize Pathao logic
-      const settings = SM.getSettings();
+      let settings = SM.getSettings();
+      if (!settings.pathaoClient) {
+        try {
+          const snap = await db.collection('settings').doc('store').get();
+          if(snap.exists) settings = snap.data();
+        } catch(e){}
+      }
       let pathaoToken = '';
       async function fetchPathao(endpoint, method = 'GET', body = null) {
         const headers = { 'Authorization': pathaoToken ? `Bearer ${pathaoToken}` : '' };
@@ -575,6 +581,11 @@
         e.preventDefault();
         
         const fd = new FormData(e.target);
+        
+        if(!document.getElementById('policy-checkbox').checked) {
+          return SM.toast('Please check the Privacy Policy and Terms & Conditions to proceed', 'error');
+        }
+
         const data = Object.fromEntries(fd.entries());
         
         const cityEl = document.getElementById('pathaoCity');
@@ -685,6 +696,11 @@
       
       let methodMap = { cod: 'COD', esewa: 'eSewa', bank: 'Bank' };
       document.getElementById('payment-method-input').value = methodMap[tabId];
+      
+      document.getElementById('esewa-number').required = (tabId === 'esewa');
+      document.getElementById('esewa-txn').required = (tabId === 'esewa');
+      document.getElementById('bank-name').required = (tabId === 'bank');
+      document.getElementById('bank-txn').required = (tabId === 'bank');
     }
   </script>
 </body>
