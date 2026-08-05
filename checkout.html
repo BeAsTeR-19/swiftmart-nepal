@@ -259,15 +259,11 @@
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="pay-form-group">
                   <label>City *</label>
-                  <select name="city" id="pathaoCity" required onchange="loadPathaoZones()">
-                    <option value="">Loading Cities...</option>
-                  </select>
+                  <input type="text" name="city" id="pathaoCity" required placeholder="e.g. Kathmandu">
                 </div>
                 <div class="pay-form-group">
                   <label>Zone *</label>
-                  <select name="zone" id="pathaoZone" required onchange="loadPathaoAreas()">
-                    <option value="">Select City first</option>
-                  </select>
+                  <input type="text" name="zone" id="pathaoZone" required placeholder="e.g. Bagmati">
                 </div>
               </div>
               
@@ -281,11 +277,9 @@
 
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="pay-form-group">
-                  <label>Area *</label>
-                  <select name="area" id="pathaoArea" required>
-                    <option value="">Select Zone first</option>
-                  </select>
-                </div>
+                <label>Area *</label>
+                <input type="text" name="area" id="pathaoArea" required placeholder="e.g. Baneshwor">
+              </div>
                 <div class="pay-form-group">
                   <label>Street Address & Landmark *</label>
                   <input type="text" name="address" required placeholder="Street name, landmark, etc.">
