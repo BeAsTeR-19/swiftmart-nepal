@@ -216,6 +216,51 @@
         </div>
       </div>
     </div>
+    
+    <div id="reviews-qa-container" style="display:none; margin-top:40px; border-top: 1px solid var(--border); padding-top: 32px;">
+      <div style="display:flex; gap:32px; flex-wrap:wrap;">
+        
+        <!-- REVIEWS SECTION -->
+        <div style="flex:1; min-width:300px;">
+          <h2 style="font-size:20px; margin-bottom:16px;">Customer Reviews</h2>
+          <div id="reviews-list" style="margin-bottom:24px;"></div>
+          
+          <div id="login-prompt" style="background:var(--bg-alt); padding:16px; border-radius:var(--radius-sm); text-align:center;">
+            <p style="margin-bottom:12px;">Sign in to write a review or ask a question.</p>
+            <a href="login.html" class="btn btn-primary">Sign In</a>
+          </div>
+          
+          <div id="review-form-container" style="display:none; background:var(--bg-alt); padding:16px; border-radius:var(--radius-sm);">
+            <h3 style="font-size:16px; margin-bottom:12px;">Write a Review</h3>
+            <p id="review-eligibility-msg" style="color:var(--red); font-size:13px; margin-bottom:12px; display:none;">You can only review products you have purchased and received.</p>
+            <div id="review-input-area" style="display:none;">
+              <div id="star-rating-select" style="display:flex; gap:4px; margin-bottom:12px;">
+                <svg data-val="1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-val="2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-val="3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-val="4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-val="5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <textarea id="review-text" class="form-control" rows="3" placeholder="What did you like or dislike?"></textarea>
+              <button class="btn btn-primary mt-2" onclick="submitReview()">Submit Review</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q&A SECTION -->
+        <div style="flex:1; min-width:300px;">
+          <h2 style="font-size:20px; margin-bottom:16px;">Questions & Answers</h2>
+          <div id="qa-list" style="margin-bottom:24px;"></div>
+          
+          <div id="qa-form-container" style="display:none; background:var(--bg-alt); padding:16px; border-radius:var(--radius-sm);">
+            <h3 style="font-size:16px; margin-bottom:12px;">Ask a Question</h3>
+            <textarea id="qa-text" class="form-control" rows="2" placeholder="Have a question about this product?"></textarea>
+            <button class="btn btn-secondary mt-2" onclick="submitQuestion()">Ask Question</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
   </div>
   
   <div class="container" id="error-container" style="display:none; padding:100px 0;">
@@ -355,6 +400,7 @@
 
       if (currentProduct) {
         document.getElementById('product-container').style.display = 'block';
+        document.getElementById('reviews-qa-container').style.display = 'block';
         document.title = `${currentProduct.name} - SwiftMart Nepal`;
 
         const schema = {
@@ -431,14 +477,14 @@
         if (wishBtn) {
           const isW = window.SM.isWishlisted(currentProduct.id);
           wishBtn.classList.toggle('active', isW);
-          wishBtn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (isW ? '#c65d1a' : 'none') + '" stroke="' + (isW ? '#c65d1a' : '#999') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+          wishBtn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (isW ? '#ff0000' : 'none') + '" stroke="' + (isW ? '#ff0000' : '#999') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
           
           wishBtn.onclick = function(e) {
             e.stopPropagation();
             window.SM.toggleWishlist(currentProduct.id);
             const nw = window.SM.isWishlisted(currentProduct.id);
             this.classList.toggle('active', nw);
-            this.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (nw ? '#c65d1a' : 'none') + '" stroke="' + (nw ? '#c65d1a' : '#999') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+            this.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="' + (nw ? '#ff0000' : 'none') + '" stroke="' + (nw ? '#ff0000' : '#999') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
           };
         }
         
@@ -573,18 +619,106 @@
         });
       });
       
-      firebase.auth().onAuthStateChanged(user => {
+      firebase.auth().onAuthStateChanged(async user => {
         if(user) {
-          document.getElementById('review-form-container').style.display = 'block';
           document.getElementById('login-prompt').style.display = 'none';
+          document.getElementById('qa-form-container').style.display = 'block';
+          
+          let hasPurchased = false;
+          try {
+            const snap = await db.collection('orders')
+                                 .where('userId', '==', user.uid)
+                                 .where('status', '==', 'delivered')
+                                 .get();
+            snap.docs.forEach(doc => {
+              const order = doc.data();
+              if (order.items && order.items.some(i => i.id === currentProduct.id || i.productId === currentProduct.id)) {
+                hasPurchased = true;
+              }
+            });
+          } catch(e) { console.error('Error checking orders', e); }
+
+          document.getElementById('review-form-container').style.display = 'block';
+          if (hasPurchased) {
+            document.getElementById('review-input-area').style.display = 'block';
+            document.getElementById('review-eligibility-msg').style.display = 'none';
+          } else {
+            document.getElementById('review-input-area').style.display = 'none';
+            document.getElementById('review-eligibility-msg').style.display = 'block';
+          }
         } else {
           document.getElementById('review-form-container').style.display = 'none';
+          document.getElementById('qa-form-container').style.display = 'none';
           document.getElementById('login-prompt').style.display = 'block';
         }
       });
 
       renderReviews();
+      renderQA();
     }
+    
+    function renderQA() {
+      const container = document.getElementById('qa-list');
+      if(!currentProduct.qa || currentProduct.qa.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-3); font-size:14px;">No questions asked yet.</p>';
+        return;
+      }
+      
+      let html = '';
+      currentProduct.qa.forEach(q => {
+        let answerHtml = '';
+        if(q.answer) {
+          answerHtml = `
+            <div class="review-reply">
+              <div class="review-reply-header">
+                <img src="assets/images/logo-icon.png" alt="SwiftMart" onerror="this.style.display='none'">
+                <span>SwiftMart</span>
+              </div>
+              <div style="font-size:13px; color:var(--text-2); line-height:1.4;">${q.answer}</div>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="review-item" style="padding-bottom:16px; border-bottom:1px solid var(--border); margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <strong style="font-size:14px;">Q: ${q.text}</strong>
+              <span style="color:var(--text-3); font-size:12px;">${q.name || 'Customer'}</span>
+            </div>
+            ${answerHtml}
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    window.submitQuestion = async function() {
+      const text = document.getElementById('qa-text').value.trim();
+      if(!text) return alert('Please write a question.');
+      
+      const user = firebase.auth().currentUser;
+      if(!user) return alert('Not logged in');
+
+      const newQ = {
+        name: user.displayName || 'Customer',
+        text: text,
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      currentProduct.qa = currentProduct.qa || [];
+      currentProduct.qa.unshift(newQ);
+      
+      try {
+        await SM.updateProduct(currentProduct.id, { qa: currentProduct.qa });
+        sessionStorage.removeItem('sm_cache_products');
+        document.getElementById('qa-text').value = '';
+        renderQA();
+        showToast('Question submitted successfully!', 'success');
+      } catch(e) {
+        console.error(e);
+        showToast('Error submitting question', 'error');
+      }
+    };
 
     function renderReviews() {
       const container = document.getElementById('reviews-list');
