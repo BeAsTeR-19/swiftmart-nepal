@@ -269,7 +269,8 @@
               
               <div class="pay-form-group">
                 <label>Delivery Location *</label>
-                <select name="deliveryZone" id="zone-select" onchange="updateTotals()">
+                <select name="deliveryZone" id="zone-select" onchange="updateTotals()" required>
+                  <option value="" disabled selected>Select Delivery Location...</option>
                   <option value="inside">Inside Kathmandu Valley</option>
                   <option value="outside">Outside Valley</option>
                 </select>
@@ -456,6 +457,33 @@
     let deliveryVal = 0;
     let totalVal = 0;
     let cartItems = [];
+    let discountPercentage = 0;
+
+    window.handlePromoCodeApply = function() {
+      const codeInput = document.getElementById('promo-code-input').value.trim().toUpperCase();
+      const msgEl = document.getElementById('promo-message');
+      if (!codeInput) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = '#d32f2f';
+        msgEl.textContent = 'Please enter a promo code.';
+        return;
+      }
+      
+      // Simple hardcoded discount for demonstration
+      if (codeInput === 'SWIFT10') {
+        discountPercentage = 10;
+        msgEl.style.display = 'block';
+        msgEl.style.color = 'var(--success, #27ae60)';
+        msgEl.textContent = 'Promo code applied! 10% off.';
+        updateTotals();
+      } else {
+        discountPercentage = 0;
+        msgEl.style.display = 'block';
+        msgEl.style.color = '#d32f2f';
+        msgEl.textContent = 'Invalid promo code.';
+        updateTotals();
+      }
+    };
 
     window.updateCheckoutQty = function(id, delta) {
       const item = cartItems.find(i => i.id === id);
@@ -620,11 +648,19 @@
       subtotalVal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
       
       const zoneSelect = document.getElementById('zone-select');
-      const isInside = zoneSelect ? zoneSelect.value === 'inside' : true;
+      const zoneValue = zoneSelect ? zoneSelect.value : '';
       
-      deliveryVal = isInside ? settings.deliveryFeeInside : settings.deliveryFeeOutside;
-      if (subtotalVal >= settings.freeDeliveryThreshold) {
+      let deliveryText = '';
+      if (zoneValue === '') {
         deliveryVal = 0;
+        deliveryText = 'Select location';
+      } else {
+        const isInside = zoneValue === 'inside';
+        deliveryVal = isInside ? settings.deliveryFeeValley : settings.deliveryFeeOutside;
+        if (subtotalVal >= settings.freeDeliveryThreshold) {
+          deliveryVal = 0;
+        }
+        deliveryText = deliveryVal === 0 ? 'Free' : SM.formatPrice(deliveryVal);
       }
       
       let discountAmount = 0;
@@ -635,7 +671,7 @@
       totalVal = subtotalVal + deliveryVal - discountAmount;
       
       document.getElementById('co-subtotal').textContent = SM.formatPrice(subtotalVal);
-      document.getElementById('co-delivery').textContent = deliveryVal === 0 ? 'Free' : SM.formatPrice(deliveryVal);
+      document.getElementById('co-delivery').textContent = deliveryText;
       
       if (discountAmount > 0) {
         let discountRow = document.getElementById('co-discount-row');
