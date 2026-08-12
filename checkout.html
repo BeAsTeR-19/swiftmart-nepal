@@ -457,9 +457,10 @@
     let deliveryVal = 0;
     let totalVal = 0;
     let cartItems = [];
-    let discountPercentage = 0;
+    let discountAmount = 0;
+    let appliedPromoCode = null;
 
-    window.handlePromoCodeApply = function() {
+    window.handlePromoCodeApply = async function() {
       const codeInput = document.getElementById('promo-code-input').value.trim().toUpperCase();
       const msgEl = document.getElementById('promo-message');
       if (!codeInput) {
@@ -469,15 +470,29 @@
         return;
       }
       
-      // Simple hardcoded discount for demonstration
-      if (codeInput === 'SWIFT10') {
-        discountPercentage = 10;
+      let promos = [];
+      try {
+        const doc = await db.collection('settings').doc('store').get();
+        if (doc.exists) {
+          promos = doc.data().promoCodes || [];
+        }
+      } catch (e) {
+        console.error(e);
+        promos = SM.getSettings().promoCodes || [];
+      }
+      
+      const match = promos.find(p => p.code === codeInput);
+
+      if (match) {
+        appliedPromoCode = match.code;
+        discountAmount = parseInt(match.discount) || 0;
         msgEl.style.display = 'block';
         msgEl.style.color = 'var(--success, #27ae60)';
-        msgEl.textContent = 'Promo code applied! 10% off.';
+        msgEl.textContent = `Promo code applied! Rs ${discountAmount} off.`;
         updateTotals();
       } else {
-        discountPercentage = 0;
+        appliedPromoCode = null;
+        discountAmount = 0;
         msgEl.style.display = 'block';
         msgEl.style.color = '#d32f2f';
         msgEl.textContent = 'Invalid promo code.';
@@ -614,6 +629,8 @@
           items: cartItems,
           subtotal: subtotalVal,
           deliveryFee: deliveryVal,
+          discountAmount: discountAmount,
+          appliedPromoCode: appliedPromoCode,
           total: totalVal,
           customer: {
             name: data.name,
@@ -663,12 +680,10 @@
         deliveryText = deliveryVal === 0 ? 'Free' : SM.formatPrice(deliveryVal);
       }
       
-      let discountAmount = 0;
-      if (discountPercentage > 0) {
-        discountAmount = Math.floor(subtotalVal * (discountPercentage / 100));
-      }
+      // discountAmount is global now
       
       totalVal = subtotalVal + deliveryVal - discountAmount;
+      if (totalVal < 0) totalVal = 0; // prevent negative total
       
       document.getElementById('co-subtotal').textContent = SM.formatPrice(subtotalVal);
       document.getElementById('co-delivery').textContent = deliveryText;
