@@ -10,7 +10,7 @@ const sm_keys = {
 const defaultSettings = {
   storeName: 'SwiftMart Nepal',
   email: 'contact@swiftmartnepal.com',
-  phone: '+977 976-9753746',
+  phone: '+977 9740262832',
   whatsapp: '9779802483843',
   facebook: 'https://www.facebook.com/profile.php?id=61592544157695',
   announcement: 'Free delivery all over Nepal on orders over Rs 3,000!',
